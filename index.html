@@ -3,802 +3,353 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#080b12">
-  <meta name="description" content="PestoAi finds product bottlenecks and prepares clear, reviewable improvements.">
-  <title>PestoAi — Find the bottleneck. Ship the fix.</title>
-  <style>
-    :root {
-      --bg: #080b12;
-      --panel: #0e131d;
-      --panel-2: #121925;
-      --line: #252f3f;
-      --line-soft: #1a2230;
-      --text: #f6f8fb;
-      --muted: #8f9bad;
-      --muted-2: #667287;
-      --blue: #6d7cff;
-      --blue-2: #9aa5ff;
-      --cyan: #5de2d6;
-      --green: #5ee3a3;
-      --red: #ff7c8c;
-      --amber: #ffc76b;
-      --radius: 18px;
-      --radius-sm: 11px;
-      --shadow: 0 30px 90px rgba(0,0,0,.35);
-      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      min-width: 320px;
-      background:
-        radial-gradient(circle at 70% -10%, rgba(109,124,255,.18), transparent 32rem),
-        linear-gradient(180deg, #080b12 0%, #090d15 100%);
-      color: var(--text);
-      font-family: var(--sans);
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    button, a, input { font: inherit; }
-    button, a { -webkit-tap-highlight-color: transparent; }
-    button { color: inherit; }
-    a { color: inherit; text-decoration: none; }
-    [hidden] { display: none !important; }
-
-    .shell { width: min(1160px, calc(100% - 40px)); margin-inline: auto; }
-    .mono { font-family: var(--mono); }
-
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      border-bottom: 1px solid rgba(255,255,255,.06);
-      background: rgba(8,11,18,.78);
-      backdrop-filter: blur(18px);
-    }
-    .header-inner { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-    .brand { display: inline-flex; align-items: center; gap: 11px; font-weight: 750; letter-spacing: -.025em; }
-    .brand-mark {
-      width: 30px; height: 30px; display: grid; place-items: center;
-      border: 1px solid rgba(154,165,255,.42); border-radius: 9px;
-      background: linear-gradient(145deg, rgba(109,124,255,.24), rgba(93,226,214,.08));
-      box-shadow: inset 0 0 22px rgba(109,124,255,.12);
-    }
-    .brand-mark::before { content: "A"; color: var(--blue-2); font: 700 14px/1 var(--mono); }
-    .header-links { display: flex; align-items: center; gap: 26px; color: var(--muted); font-size: 14px; }
-    .header-links a:hover { color: var(--text); }
-
-    .button {
-      min-height: 43px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      padding: 0 17px;
-      border: 1px solid transparent;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 14px;
-      transition: transform .16s ease, border-color .16s ease, background .16s ease, opacity .16s ease;
-    }
-    .button:hover:not(:disabled) { transform: translateY(-1px); }
-    .button:focus-visible, .scenario-tab:focus-visible, .icon-button:focus-visible, .text-button:focus-visible {
-      outline: 3px solid rgba(109,124,255,.42); outline-offset: 3px;
-    }
-    .button:disabled { cursor: wait; opacity: .68; }
-    .button-primary { color: #fff; background: linear-gradient(135deg, #6877ff, #5363e8); box-shadow: 0 10px 24px rgba(83,99,232,.22); }
-    .button-secondary { border-color: var(--line); background: #111722; color: #dbe1eb; }
-    .button-ghost { min-height: 39px; border-color: var(--line); background: rgba(255,255,255,.02); }
-
-    .hero {
-      display: grid;
-      grid-template-columns: 1.02fr .98fr;
-      align-items: center;
-      gap: 72px;
-      min-height: 650px;
-      padding-block: 92px 82px;
-    }
-    .eyebrow { margin: 0 0 18px; color: var(--blue-2); font: 600 11px/1.2 var(--mono); letter-spacing: .13em; text-transform: uppercase; }
-    .hero h1 { max-width: 720px; margin: 0; font-size: clamp(48px, 6.2vw, 82px); line-height: .98; letter-spacing: -.065em; }
-    .hero h1 em { color: var(--blue-2); font-style: normal; }
-    .hero-copy > p:not(.eyebrow) { max-width: 580px; margin: 25px 0 31px; color: var(--muted); font-size: 18px; }
-    .hero-actions { display: flex; flex-wrap: wrap; gap: 11px; }
-    .hero-note { margin-top: 24px; color: var(--muted-2); font: 12px var(--mono); }
-
-    .hero-console {
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(18,25,37,.96), rgba(11,16,24,.98));
-      box-shadow: var(--shadow);
-      transform: rotate(1.1deg);
-    }
-    .console-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid var(--line-soft); color: var(--muted-2); font-size: 10px; }
-    .dots { display: flex; gap: 6px; }
-    .dots i { width: 7px; height: 7px; border-radius: 50%; background: #354052; }
-    .console-body { padding: 24px; font-family: var(--mono); font-size: 12px; }
-    .console-line { display: flex; gap: 15px; margin: 0 0 13px; color: #aeb8c9; }
-    .console-line > span:first-child { color: #455165; }
-    .console-line .ok { color: var(--green); }
-    .finding-card { margin-top: 24px; padding: 20px; border: 1px solid rgba(109,124,255,.36); border-radius: 13px; background: rgba(109,124,255,.09); }
-    .finding-card small { color: var(--blue-2); font-size: 9px; letter-spacing: .11em; }
-    .finding-card h2 { margin: 9px 0 7px; font: 700 20px/1.15 var(--sans); letter-spacing: -.025em; }
-    .finding-card p { margin: 0 0 18px; color: #9da9bc; }
-    .finding-metric { display: flex; align-items: center; gap: 10px; color: var(--muted); }
-    .finding-metric del { color: var(--red); }
-    .finding-metric strong { color: var(--green); }
-
-    .proof-strip { border-block: 1px solid var(--line-soft); background: rgba(255,255,255,.015); }
-    .proof-inner { min-height: 70px; display: grid; grid-template-columns: repeat(3,1fr); align-items: center; text-align: center; color: #aeb7c6; font-size: 13px; }
-    .proof-inner span + span { border-left: 1px solid var(--line-soft); }
-
-    .demo-section { padding-block: 104px; }
-    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 30px; }
-    .section-head h2 { margin: 0; font-size: clamp(32px, 4vw, 50px); letter-spacing: -.05em; line-height: 1.04; }
-    .section-head > p { max-width: 420px; margin: 0; color: var(--muted); font-size: 14px; }
-
-    .scenario-tabs { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 13px; }
-    .scenario-tab {
-      min-height: 84px;
-      display: grid;
-      grid-template-columns: 34px 1fr;
-      column-gap: 10px;
-      align-content: center;
-      padding: 15px 16px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: rgba(16,22,33,.8);
-      color: var(--muted);
-      text-align: left;
-      cursor: pointer;
-      transition: border-color .18s ease, background .18s ease, transform .18s ease;
-    }
-    .scenario-tab:hover { transform: translateY(-1px); border-color: #3b4860; }
-    .scenario-tab.active { border-color: rgba(109,124,255,.75); background: rgba(109,124,255,.1); }
-    .scenario-tab .tab-number { grid-row: 1/3; color: var(--blue-2); font: 600 10px var(--mono); }
-    .scenario-tab strong { color: #e8edf5; font-size: 14px; }
-    .scenario-tab small { font-size: 11px; }
-
-    .workbench { overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); box-shadow: var(--shadow); }
-    .workbench-bar { min-height: 74px; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 13px 17px; border-bottom: 1px solid var(--line); background: #111722; }
-    .project { min-width: 0; display: flex; align-items: center; gap: 12px; }
-    .project-icon { flex: 0 0 auto; width: 37px; height: 37px; display: grid; place-items: center; border: 1px solid #313c4e; border-radius: 9px; color: var(--cyan); background: #0d131d; font-size: 12px; }
-    .project strong, .project span { display: block; }
-    .project strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
-    .project span { margin-top: 2px; color: var(--muted-2); font: 9px var(--mono); text-transform: uppercase; letter-spacing: .07em; }
-    .workbench-actions { display: flex; align-items: center; gap: 9px; }
-    .score { padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; color: var(--amber); background: #0c111a; font: 600 10px var(--mono); transition: color .2s ease, border-color .2s ease; }
-    .score.complete { color: var(--green); border-color: rgba(94,227,163,.35); }
-    .icon-button { width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 10px; background: #0d131d; color: var(--muted); cursor: pointer; font-size: 19px; }
-
-    .workbench-grid { display: grid; grid-template-columns: minmax(0,1.58fr) minmax(320px,.72fr); min-height: 610px; }
-    .preview-wrap { min-width: 0; padding: 18px; border-right: 1px solid var(--line); background: #0a0f17; }
-    .browser { position: relative; height: 100%; min-height: 574px; overflow: hidden; border: 1px solid #344054; border-radius: 12px; background: #fff; }
-    .browser-bar { height: 43px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 13px; padding: 0 13px; border-bottom: 1px solid #d9dee7; background: #eef1f5; }
-    .browser-bar .dots i { background: #c6ccd6; }
-    .address { width: min(100%, 420px); justify-self: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 6px 12px; border: 1px solid #d7dce4; border-radius: 7px; background: #fff; color: #6a7483; text-align: center; font: 9px var(--mono); }
-    .browser-more { color: #848c98; letter-spacing: 2px; }
-    .preview { position: absolute; inset: 43px 0 0; overflow: auto; color: #15171c; background: #fff; }
-    .demo-stage { min-height: 100%; animation: preview-in .28s ease both; }
-    @keyframes preview-in { from { opacity: .35; transform: scale(.994); } }
-
-    .scan-overlay { position: absolute; z-index: 8; inset: 43px 0 0; display: grid; align-content: end; padding: 15px; background: rgba(6,9,15,.55); opacity: 0; visibility: hidden; transition: opacity .18s ease, visibility .18s ease; pointer-events: none; }
-    .scan-overlay.active { opacity: 1; visibility: visible; }
-    .scan-line { position: absolute; inset-inline: 0; top: 4%; height: 2px; background: var(--blue-2); box-shadow: 0 0 30px 7px rgba(109,124,255,.6); animation: scan 1.05s ease-in-out infinite alternate; }
-    @keyframes scan { to { top: 93%; } }
-    .scan-status { display: flex; align-items: center; justify-content: space-between; padding: 11px 12px; border: 1px solid rgba(255,255,255,.16); border-radius: 9px; background: rgba(8,12,19,.88); color: #dce2ed; font: 10px var(--mono); backdrop-filter: blur(9px); }
-    .scan-status strong { color: var(--blue-2); }
-
-    .analysis { min-width: 0; padding: 29px; background: linear-gradient(180deg, #121924, #101620); }
-    .panel-state { min-height: 100%; display: flex; flex-direction: column; justify-content: center; }
-    .panel-label { margin: 0 0 12px; color: var(--blue-2) !important; font: 600 9px var(--mono) !important; letter-spacing: .12em; text-transform: uppercase; }
-    .analysis h3 { margin: 0 0 10px; font-size: 25px; line-height: 1.08; letter-spacing: -.035em; }
-    .analysis p { margin: 0; color: var(--muted); font-size: 13px; }
-    .ready-orbit { position: relative; width: 88px; height: 88px; margin-bottom: 28px; border: 1px solid rgba(109,124,255,.28); border-radius: 50%; }
-    .ready-orbit::before, .ready-orbit::after { content:""; position:absolute; inset:14px; border:1px solid rgba(109,124,255,.2); border-radius:50%; }
-    .ready-orbit::after { inset: 31px; border: 0; background: var(--blue); box-shadow: 0 0 22px rgba(109,124,255,.85); }
-    .ready-orbit i { position:absolute; inset:-1px; border-top:1px solid var(--blue-2); border-radius:50%; animation: spin 2s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .progress { height: 5px; margin: 22px 0; overflow: hidden; border-radius: 99px; background: #242d3b; }
-    .progress span { display: block; width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--blue), var(--cyan)); transition: width .32s ease; }
-    .scan-list { display: grid; gap: 11px; padding: 0; margin: 0; list-style: none; color: #78859a; font: 10px var(--mono); }
-    .scan-list li { display: flex; align-items: center; gap: 9px; }
-    .scan-list li.active { color: #e8ecf4; }
-    .scan-list li.done { color: var(--green); }
-    .scan-list i { width: 15px; font-style: normal; }
-
-    .results-head { display: flex; align-items: start; justify-content: space-between; gap: 15px; margin-bottom: 20px; }
-    .impact { padding: 6px 8px; border: 1px solid rgba(255,199,107,.3); border-radius: 99px; color: var(--amber); background: rgba(255,199,107,.07); font: 600 8px var(--mono); text-transform: uppercase; white-space: nowrap; }
-    .suggestions { display: grid; gap: 8px; margin-bottom: 18px; }
-    .suggestion { display: grid; grid-template-columns: 25px 1fr auto; gap: 9px; align-items: start; padding: 12px; border: 1px solid #273143; border-radius: 10px; background: #0d131d; }
-    .suggestion > span:first-child { color: var(--blue-2); font: 9px var(--mono); }
-    .suggestion strong { display: block; margin-bottom: 3px; font-size: 11px; }
-    .suggestion p { font-size: 10px; line-height: 1.35; }
-    .suggestion .impact-value { color: var(--green); font: 600 9px var(--mono); }
-    .apply-button { width: 100%; }
-
-    .complete-check { width: 43px; height: 43px; display: grid; place-items: center; margin-bottom: 20px; border: 1px solid rgba(94,227,163,.4); border-radius: 50%; color: var(--green); background: rgba(94,227,163,.08); font-weight: 800; }
-    .metrics { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin: 22px 0; }
-    .metric { padding: 11px; border: 1px solid #273143; border-radius: 9px; background: #0d131d; }
-    .metric span { display: block; margin-bottom: 5px; color: var(--muted-2); font-size: 9px; }
-    .metric strong { display: flex; align-items: center; gap: 7px; color: var(--green); font: 600 11px var(--mono); }
-    .metric del { color: #738095; font-weight: 400; }
-    .complete-actions { display: flex; align-items: center; gap: 15px; }
-    .text-button { border: 0; padding: 8px 0; background: transparent; color: var(--blue-2); cursor: pointer; font-size: 12px; font-weight: 700; }
-
-    .change-log { border-top: 1px solid var(--line); background: #090e16; }
-    .change-log-head { display: flex; align-items: center; justify-content: space-between; padding: 11px 16px; border-bottom: 1px solid var(--line-soft); color: var(--muted); font: 10px var(--mono); }
-    .change-log-head button { border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 20px; }
-    .diff { max-height: 250px; overflow: auto; padding: 15px 17px; font: 10px/1.75 var(--mono); }
-    .diff-file { color: var(--blue-2); }
-    .diff-add { color: var(--green); }
-    .diff-remove { color: var(--red); }
-
-    /* Demo 1: legacy website */
-    .legacy { min-height: 100%; background: #fff8d7; font-family: Arial, sans-serif; }
-    .legacy-header { padding: 18px 22px; border-bottom: 5px ridge #8d4d20; text-align: center; background: #7b2f14; color: #fff500; }
-    .legacy-header h4 { margin: 0 0 8px; font-size: 29px; text-shadow: 2px 2px #000; }
-    .legacy-nav { font-size: 12px; text-decoration: underline; word-spacing: 14px; }
-    .legacy-marquee { padding: 8px; background: #ffe200; color: #cc0000; font-weight: 800; text-align: center; font-size: 12px; }
-    .legacy-main { width: 82%; margin: 30px auto; padding: 22px; border: 3px dashed #8a3819; background: white; text-align: center; }
-    .legacy-main h3 { margin: 0; color: #7b2f14; font: 800 31px/1.05 Georgia, serif; }
-    .legacy-main > p { color: #1f4e1f; font-size: 15px; }
-    .fake-legacy-button { display: inline-block; margin: 13px 0 25px; padding: 10px 17px; border: 3px outset #ddd; background: #ffeb3b; color: #0022cc; font-weight: 800; font-size: 13px; }
-    .legacy-columns { display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; }
-    .legacy-columns div { min-height: 110px; padding: 12px 6px; border: 1px solid #333; background: #e7f5d4; font-size: 11px; }
-    .legacy-footer { padding: 12px; color: #555; text-align: center; font-size: 10px; }
-
-    .coffee-new { min-height: 100%; display: grid; grid-template-rows: auto 1fr auto; background: #f3eee4; color: #1f241d; font-family: var(--sans); }
-    .coffee-nav { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 20px 26px; }
-    .coffee-logo { font-weight: 800; letter-spacing: -.03em; }
-    .coffee-logo b { color: #8a5a3b; }
-    .coffee-links { display: flex; gap: 20px; color: #697062; font-size: 11px; }
-    .coffee-order { padding: 9px 12px; border-radius: 99px; background: #263126; color: #fff; font-size: 10px; font-weight: 700; }
-    .coffee-hero { display: grid; grid-template-columns: 1.12fr .88fr; align-items: center; gap: 25px; padding: 35px 48px 45px; }
-    .coffee-copy small { color: #84664f; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; }
-    .coffee-copy h3 { max-width: 420px; margin: 13px 0; font: 700 clamp(38px, 5vw, 64px)/.96 Georgia, serif; letter-spacing: -.05em; }
-    .coffee-copy p { max-width: 430px; color: #667061; font-size: 13px; }
-    .coffee-actions { display: flex; align-items: center; gap: 14px; margin-top: 22px; }
-    .coffee-primary { padding: 11px 14px; border-radius: 8px; background: #263126; color: #fff; font-size: 10px; font-weight: 700; }
-    .coffee-secondary { color: #656d61; font-size: 10px; font-weight: 700; }
-    .coffee-art { aspect-ratio: 1; display: grid; place-items: center; border-radius: 48% 52% 46% 54%; background: radial-gradient(circle at 40% 35%, #e4cdb5, #bd8d69 70%); }
-    .coffee-cup { position: relative; width: 42%; height: 27%; border-radius: 7px 7px 42px 42px; background: #f7f2e8; box-shadow: 0 20px 28px rgba(68,38,18,.18); }
-    .coffee-cup::before { content:""; position:absolute; right:-29%; top:14%; width:35%; height:52%; border:9px solid #f7f2e8; border-left:0; border-radius:0 50% 50% 0; }
-    .coffee-cup::after { content:""; position:absolute; left:8%; right:8%; top:5px; height:12px; border-radius:50%; background:#56301f; }
-    .coffee-bottom { display: grid; grid-template-columns: repeat(3,1fr); padding: 18px 26px; border-top: 1px solid rgba(38,49,38,.13); color: #626a5f; font-size: 10px; }
-    .coffee-bottom span:nth-child(2) { text-align:center; }.coffee-bottom span:last-child { text-align:right; }
-
-    /* Demo 2: query optimiser */
-    .query-demo { min-height: 100%; padding: 22px; background: #0d121a; color: #d8deea; font-family: var(--mono); }
-    .query-title { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 16px; color: #8793a7; font-size: 9px; }
-    .query-title .bad { color: var(--red); }.query-title .good { color: var(--green); }
-    .code-card { overflow: hidden; border: 1px solid #273244; border-radius: 9px; background: #090e15; }
-    .code-card-head { padding: 10px 13px; border-bottom: 1px solid #20293a; color: #768399; font-size: 9px; }
-    .code-lines { padding: 14px 0; }
-    .code-line { display: grid; grid-template-columns: 35px 1fr; padding: 4px 13px; font-size: 10px; white-space: nowrap; }
-    .line-no { color: #3f4b5e; }.kw { color: #8b98ff; }.fn { color: #ffd483; }.str { color: #73dfae; }
-    .code-line.problem { background: rgba(255,124,140,.08); color: #ffc0c8; }
-    .code-line.fixed { background: rgba(94,227,163,.08); color: #b9f6d6; }
-    .query-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin: 13px 0; }
-    .query-stat { padding: 11px; border: 1px solid #273244; border-radius: 8px; background: #101722; }
-    .query-stat span { display: block; margin-bottom: 5px; color: #707d92; font-size: 8px; }
-    .query-stat strong { font-size: 14px; }.query-stat strong.bad { color: var(--red); }.query-stat strong.good { color: var(--green); }
-    .trace { display: grid; gap: 5px; }
-    .trace-row { display:flex; justify-content:space-between; gap:15px; padding:8px 10px; border-left:2px solid #3a4558; background:#111823; color:#8894a8; font-size:8px; }
-    .trace-row b { flex:0 0 auto; color:#b9c2d0; }.trace-row.optimized { border-color: var(--green); }
-
-    /* Demo 3: checkout */
-    .checkout-old { min-height:100%; padding:18px; background:#f2f2f2; font-family:Arial,sans-serif; color:#111; }
-    .old-store { display:flex; justify-content:space-between; gap:10px; padding:11px; border:2px solid #111; background:#fff; font-weight:800; font-size:11px; }
-    .old-store span:last-child { text-decoration:underline; }
-    .old-warning { margin:10px 0; padding:9px; border:2px solid #bd0000; background:#fff1a8; color:#bd0000; font-size:10px; font-weight:700; }
-    .checkout-old h3 { font-size:17px; }
-    .old-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
-    .old-field { font-size:8px; font-weight:700; }
-    .old-input { height:28px; margin-top:3px; border:2px inset #aaa; background:#fff; }
-    .old-total { display:flex; justify-content:space-between; margin-top:12px; padding:10px; border:1px solid #777; background:#fff; font-size:11px; }
-    .old-pay { margin-top:10px; padding:11px; border:3px outset #aaa; background:#ddd; text-align:center; font-size:10px; font-weight:800; }
-
-    .checkout-new { min-height:100%; display:grid; grid-template-columns:1.2fr .8fr; background:#f7f8fa; color:#202631; font-family:var(--sans); }
-    .checkout-form { padding:35px 40px; }
-    .checkout-brand { margin-bottom:28px; font-weight:800; letter-spacing:-.03em; }
-    .checkout-step { margin:0 0 6px; color:#7b8492; font-size:10px; }
-    .checkout-form h3 { margin:0 0 22px; font-size:26px; letter-spacing:-.04em; }
-    .clean-fields { display:grid; gap:11px; }
-    .clean-field { font-size:9px; font-weight:700; }
-    .clean-input { height:38px; margin-top:5px; border:1px solid #d9dee6; border-radius:7px; background:#fff; box-shadow:0 2px 8px rgba(26,32,44,.03); }
-    .clean-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    .clean-pay { margin-top:17px; padding:12px; border-radius:7px; background:#202631; color:#fff; text-align:center; font-size:10px; font-weight:800; }
-    .secure-copy { margin-top:10px; color:#7f8895; text-align:center; font-size:8px; }
-    .order-summary { padding:35px 25px; background:#edf0f4; }
-    .product { display:grid; grid-template-columns:45px 1fr auto; gap:10px; align-items:center; padding-bottom:18px; border-bottom:1px solid #d3d9e2; font-size:9px; }
-    .product-thumb { width:45px; height:45px; border-radius:7px; background:linear-gradient(145deg,#52633f,#1f2d1e); }
-    .product small { display:block; color:#7d8694; }
-    .summary { display:grid; gap:11px; margin-top:18px; font-size:9px; }
-    .summary div { display:flex; justify-content:space-between; }.summary .total { padding-top:12px; border-top:1px solid #d3d9e2; font-size:12px; font-weight:800; }
-
-    .how { padding-block: 96px; }
-    .steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 13px; margin-top: 30px; }
-    .step { padding: 24px; border: 1px solid var(--line); border-radius: 14px; background: rgba(17,23,34,.65); }
-    .step > span { color: var(--blue-2); font: 10px var(--mono); }
-    .step h3 { margin: 28px 0 7px; font-size: 19px; }
-    .step p { margin: 0; color: var(--muted); font-size: 13px; }
-
-    .cta { padding-bottom: 92px; }
-    .cta-card { display: flex; align-items: center; justify-content: space-between; gap: 30px; padding: 40px; border: 1px solid rgba(109,124,255,.33); border-radius: var(--radius); background: linear-gradient(135deg, rgba(109,124,255,.14), rgba(93,226,214,.04)); }
-    .cta-card h2 { margin: 0; font-size: clamp(27px,3vw,39px); letter-spacing: -.04em; }
-
-    .site-footer { border-top: 1px solid var(--line-soft); }
-    .footer-inner { min-height: 100px; display: flex; align-items: center; justify-content: space-between; gap: 20px; color: var(--muted-2); font-size: 12px; }
-
-    .toast { position: fixed; z-index: 100; left: 50%; bottom: 24px; transform: translate(-50%,18px); padding: 10px 14px; border: 1px solid #344054; border-radius: 9px; background: rgba(13,19,29,.94); color: #e6ebf3; font: 10px var(--mono); opacity: 0; visibility: hidden; transition: .2s ease; box-shadow: 0 12px 30px rgba(0,0,0,.28); }
-    .toast.show { opacity: 1; visibility: visible; transform: translate(-50%,0); }
-
-    @media (max-width: 960px) {
-      .hero { grid-template-columns: 1fr; gap: 45px; min-height: auto; }
-      .hero-console { max-width: 700px; transform: none; }
-      .workbench-grid { grid-template-columns: 1fr; }
-      .preview-wrap { border-right: 0; border-bottom: 1px solid var(--line); }
-      .analysis { min-height: 480px; }
-      .panel-state { max-width: 650px; margin-inline: auto; }
-    }
-    @media (max-width: 720px) {
-      .shell { width: min(100% - 24px, 1160px); }
-      .header-links { display: none; }
-      .hero { padding-block: 70px 64px; }
-      .hero h1 { font-size: clamp(44px,14vw,65px); }
-      .section-head { align-items: start; flex-direction: column; }
-      .scenario-tabs, .steps { grid-template-columns: 1fr; }
-      .scenario-tab { min-height: 72px; }
-      .workbench-bar { align-items: flex-start; }
-      .workbench-actions { flex-wrap: wrap; justify-content: flex-end; }
-      .score { display: none; }
-      .preview-wrap { padding: 9px; }
-      .browser { min-height: 530px; }
-      .analysis { padding: 23px; }
-      .proof-inner { grid-template-columns: 1fr; padding-block: 8px; }
-      .proof-inner span { padding: 10px; }
-      .proof-inner span + span { border-left: 0; border-top: 1px solid var(--line-soft); }
-      .coffee-links { display:none; }
-      .coffee-hero { grid-template-columns:1fr; padding:30px 25px; }
-      .coffee-art { width:70%; justify-self:center; }
-      .coffee-bottom { grid-template-columns:1fr; gap:7px; text-align:left !important; }
-      .coffee-bottom span { text-align:left !important; }
-      .legacy-columns { grid-template-columns:1fr; }
-      .query-stats { grid-template-columns:1fr; }
-      .checkout-new { grid-template-columns:1fr; }
-      .order-summary { padding:24px; }
-      .cta-card { align-items:flex-start; flex-direction:column; }
-      .footer-inner { align-items:flex-start; flex-direction:column; justify-content:center; padding-block:28px; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior:auto; }
-      *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
-    }
-  </style>
+  <meta name="theme-color" content="#07100b">
+  <meta name="description" content="PestoAi finds the problem worth fixing, defines the right KPIs and builds practical AI improvements around the way your business already works.">
+  <title>PestoAi — Simple AI, done properly.</title>
+  <link rel="icon" href="assets/pestoai-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
   <header class="site-header">
     <div class="shell header-inner">
-      <a class="brand" href="#top" aria-label="PestoAi home"><span class="brand-mark" aria-hidden="true"></span><span>PestoAi</span></a>
-      <nav class="header-links" aria-label="Primary navigation"><a href="#demo">Demo</a><a href="#how">How it works</a></nav>
-      <a class="button button-ghost" href="mailto:blaisenewman@gmail.com?subject=PestoAi%20demo">Book a demo ↗</a>
+      <a class="brand" href="#top" aria-label="PestoAi home">
+        <span class="brand-mark" aria-hidden="true">P</span>
+        <span>PestoAi</span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="#demo">Demo</a>
+        <button class="nav-button" type="button" data-open-dialog="aboutDialog">Find out more</button>
+        <a href="#team">Team</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <button class="button button-small button-ghost header-cta" type="button" data-open-dialog="aboutDialog">
+        Find out more <span aria-hidden="true">↗</span>
+      </button>
+
+      <button class="menu-button" id="menuButton" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobileMenu">
+        <span></span><span></span>
+      </button>
     </div>
+
+    <nav class="mobile-menu shell" id="mobileMenu" aria-label="Mobile navigation" hidden>
+      <a href="#demo">Demo</a>
+      <button type="button" data-open-dialog="aboutDialog">Find out more</button>
+      <a href="#team">Team</a>
+      <a href="#contact">Contact</a>
+      <a href="#join">Join us</a>
+    </nav>
   </header>
 
-  <main id="top">
-    <section class="hero shell">
+  <main id="main">
+    <section class="hero shell" id="top">
       <div class="hero-copy">
-        <p class="eyebrow">AI improvement engine</p>
-        <h1>Find the bottleneck. <em>Ship the fix.</em></h1>
-        <p>PestoAi reviews the product you already run, finds the highest-impact improvements and prepares a change for your team to approve.</p>
+        <p class="status-pill"><span aria-hidden="true"></span> AI improvement studio</p>
+        <h1>Simple AI.<br><em>Done properly.</em></h1>
+        <p class="hero-text">
+          Give us the problem. We define the right KPIs, improve the product or process and keep adapting the solution until it fits how your business actually works.
+        </p>
         <div class="hero-actions">
-          <a class="button button-primary" href="#demo">Run the demo ↓</a>
-          <a class="button button-secondary" href="mailto:blaisenewman@gmail.com?subject=Tell%20me%20about%20PestoAi">Talk to us</a>
+          <a class="button button-primary" href="#demo">Run the demo <span aria-hidden="true">↓</span></a>
+          <button class="button button-secondary" type="button" data-open-dialog="aboutDialog">Find out more</button>
         </div>
-        <div class="hero-note">No migration · Human approval · Reviewable changes</div>
+        <div class="hero-note">No forced platform · Clear KPIs · Human approval · Built around your needs</div>
       </div>
 
-      <div class="hero-console" aria-label="Example PestoAi analysis">
-        <div class="console-top"><div class="dots" aria-hidden="true"><i></i><i></i><i></i></div><span class="mono">PestoAi://production/scan</span><span class="mono">secure</span></div>
-        <div class="console-body">
-          <p class="console-line"><span>01</span><span>$ PestoAi inspect ./production</span></p>
-          <p class="console-line"><span>02</span><span>mapping routes, queries and interfaces…</span></p>
-          <p class="console-line"><span>03</span><span class="ok">✓ 247 endpoints mapped</span></p>
-          <p class="console-line"><span>04</span><span class="ok">✓ 18 improvements ranked</span></p>
+      <div class="hero-console" aria-label="PestoAi analysis preview">
+        <div class="console-top">
+          <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+          <span class="mono">pestoai://client/problem</span>
+          <span class="mono secure">adaptable</span>
+        </div>
+        <div class="console-body mono">
+          <p class="console-line"><span>01</span><span>$ pestoai understand ./business</span></p>
+          <p class="console-line dim"><span>02</span><span>mapping goals, users and constraints…</span></p>
+          <p class="console-line"><span>03</span><span class="ok">✓ 4 useful KPIs defined</span></p>
+          <p class="console-line"><span>04</span><span class="ok">✓ highest-impact change prepared</span></p>
           <div class="finding-card">
-            <small>HIGH IMPACT · API-017</small>
-            <h2>Repeated database queries</h2>
-            <p>Batch item lookups into one request.</p>
-            <div class="finding-metric"><span>p95 latency</span><del>842 ms</del><span>→</span><strong>118 ms</strong></div>
+            <small>MEASURABLE IMPROVEMENT · KPI-004</small>
+            <h2>Reduce unnecessary work</h2>
+            <p>Replace repeated manual steps with one clear, reviewable workflow.</p>
+            <div class="finding-metric">
+              <span>completion time</span><del>18 min</del><span>→</span><strong>4 min</strong>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="proof-strip" aria-label="PestoAi benefits"><div class="shell proof-inner"><span>Works with what you already run</span><span>Findings ranked by impact</span><span>Your team approves every change</span></div></section>
+    <section class="proof-strip" aria-label="PestoAi principles">
+      <div class="shell proof-inner">
+        <span>Start with the real problem</span>
+        <span>Measure what matters</span>
+        <span>Adapt until it fits</span>
+      </div>
+    </section>
 
     <section class="demo-section" id="demo">
       <div class="shell">
-        <div class="section-head">
-          <div><p class="eyebrow">Interactive demo</p><h2>Choose a problem. Run PestoAi.</h2></div>
-          <p>Each example runs entirely in your browser. Select one, scan it, review the findings and apply the upgrade.</p>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Interactive demo</p>
+            <h2>Choose a problem. Run PestoAi.</h2>
+          </div>
+          <p>Three browser-only examples showing how PestoAi identifies, measures and improves a problem. Nothing is uploaded.</p>
         </div>
 
-        <div class="scenario-tabs" role="tablist" aria-label="PestoAi demo examples">
-          <button class="scenario-tab active" type="button" role="tab" aria-selected="true" data-scenario="coffee"><span class="tab-number">01</span><strong>Website refresh</strong><small>Outdated frontend</small></button>
-          <button class="scenario-tab" type="button" role="tab" aria-selected="false" data-scenario="queries"><span class="tab-number">02</span><strong>Query optimiser</strong><small>N+1 database calls</small></button>
-          <button class="scenario-tab" type="button" role="tab" aria-selected="false" data-scenario="checkout"><span class="tab-number">03</span><strong>Checkout cleanup</strong><small>Friction and accessibility</small></button>
+        <div class="scenario-tabs" role="tablist" aria-label="Demo examples">
+          <button class="scenario-tab active" type="button" role="tab" aria-selected="true" data-scenario="coffee">
+            <span class="mono">01</span><b>Website refresh</b><small>Cluttered customer experience</small>
+          </button>
+          <button class="scenario-tab" type="button" role="tab" aria-selected="false" data-scenario="queries">
+            <span class="mono">02</span><b>Query optimiser</b><small>Slow repeated database calls</small>
+          </button>
+          <button class="scenario-tab" type="button" role="tab" aria-selected="false" data-scenario="checkout">
+            <span class="mono">03</span><b>Checkout cleanup</b><small>Friction and accessibility</small>
+          </button>
         </div>
 
-        <div class="workbench">
-          <div class="workbench-bar">
-            <div class="project"><span class="project-icon mono">&lt;/&gt;</span><div><strong id="projectName">Northstar Coffee</strong><span id="projectStatus">Ready to scan</span></div></div>
-            <div class="workbench-actions"><span class="score" id="scoreChip">UX 34</span><button class="button button-primary" id="runButton" type="button">✦ Run PestoAi</button><button class="icon-button" id="resetButton" type="button" aria-label="Reset demo" title="Reset demo">↺</button></div>
+        <div class="demo-workbench" id="demoWorkbench">
+          <div class="workbench-toolbar">
+            <div class="project-id">
+              <span class="code-icon mono">&lt;/&gt;</span>
+              <div><strong id="projectName">Northstar Coffee</strong><span class="mono" id="projectStatus">ready to review</span></div>
+            </div>
+            <div class="toolbar-actions">
+              <span class="score-chip mono" id="scoreChip">UX 34</span>
+              <button class="button button-primary run-button" id="runPestoAi" type="button">
+                <span aria-hidden="true">✦</span> Run PestoAi
+              </button>
+              <button class="icon-button" id="resetDemo" type="button" aria-label="Reset current demo" title="Reset demo">↺</button>
+            </div>
           </div>
 
-          <div class="workbench-grid">
-            <div class="preview-wrap">
-              <div class="browser">
-                <div class="browser-bar"><div class="dots" aria-hidden="true"><i></i><i></i><i></i></div><div class="address" id="addressBar">northstar-coffee.example</div><span class="browser-more">•••</span></div>
-                <div class="preview" id="preview" aria-live="polite"></div>
-                <div class="scan-overlay" id="scanOverlay" aria-hidden="true"><div class="scan-line"></div><div class="scan-status"><span id="scanLabel">Mapping interface…</span><strong id="scanPercent">0%</strong></div></div>
+          <div class="demo-grid">
+            <div class="preview-column">
+              <div class="browser-frame">
+                <div class="browser-top">
+                  <div class="traffic-lights" aria-hidden="true"><span></span><span></span><span></span></div>
+                  <div class="address-bar mono" id="addressBar">northstar-coffee.example</div>
+                  <span class="browser-more" aria-hidden="true">•••</span>
+                </div>
+                <div class="preview-wrap" id="previewWrap" aria-live="polite"></div>
+                <div class="scan-overlay" id="scanOverlay" aria-hidden="true">
+                  <span class="scan-line"></span>
+                  <div class="scan-status mono"><span id="scanLabel">Reading interface…</span><strong id="scanPercent">0%</strong></div>
+                </div>
               </div>
             </div>
 
-            <aside class="analysis" aria-live="polite">
-              <section class="panel-state" id="stateReady">
-                <div class="ready-orbit" aria-hidden="true"><i></i></div>
-                <p class="panel-label">Ready</p>
-                <h3 id="readyTitle">Inspect this interface.</h3>
-                <p id="readyText">PestoAi will review hierarchy, responsiveness and conversion.</p>
-              </section>
+            <aside class="analysis-column" aria-live="polite">
+              <div class="analysis-panel" id="analysisEmpty">
+                <div class="radar" aria-hidden="true"><i></i><span></span></div>
+                <p class="analysis-label mono">READY</p>
+                <h3 id="emptyTitle">Review this interface.</h3>
+                <p id="emptyText">PestoAi will define useful KPIs and identify the clearest improvement.</p>
+              </div>
 
-              <section class="panel-state" id="stateRunning" hidden>
-                <p class="panel-label">Analysing</p>
-                <h3 id="runningTitle">Reading structure</h3>
-                <div class="progress"><span id="progressBar"></span></div>
-                <ul class="scan-list" id="scanList"></ul>
-              </section>
+              <div class="analysis-panel" id="analysisRunning" hidden>
+                <p class="analysis-label mono"><span class="live-dot"></span> ANALYSING</p>
+                <h3 id="runningTitle">Understanding the problem</h3>
+                <div class="progress-track"><span id="analysisProgress"></span></div>
+                <ul class="scan-log mono" id="scanLog"></ul>
+              </div>
 
-              <section class="panel-state" id="stateResults" hidden>
-                <div class="results-head"><div><p class="panel-label" id="reportLabel">PestoAi report</p><h3>Suggested improvements</h3></div><span class="impact">High impact</span></div>
-                <div class="suggestions" id="suggestions"></div>
-                <button class="button button-primary apply-button" id="applyButton" type="button">Apply improvements →</button>
-              </section>
+              <div class="analysis-panel" id="analysisResults" hidden>
+                <div class="results-head">
+                  <div><p class="analysis-label mono">PESTOAI REPORT</p><h3>Suggested improvements</h3></div>
+                  <span class="impact-badge">High impact</span>
+                </div>
+                <div class="suggestion-list" id="suggestionList"></div>
+                <button class="button button-primary apply-button" id="applyPestoAi" type="button">Apply improvements <span aria-hidden="true">→</span></button>
+              </div>
 
-              <section class="panel-state" id="stateComplete" hidden>
-                <div class="complete-check" aria-hidden="true">✓</div>
-                <p class="panel-label">PestoAi complete</p>
+              <div class="analysis-panel" id="analysisComplete" hidden>
+                <div class="complete-icon" aria-hidden="true">✓</div>
+                <p class="analysis-label mono">IMPROVEMENT COMPLETE</p>
                 <h3 id="completeTitle">Upgrade applied.</h3>
                 <p id="completeText">The recommended changes are now visible in the preview.</p>
-                <div class="metrics" id="metrics"></div>
-                <div class="complete-actions"><button class="button button-secondary" id="toggleButton" type="button">Show before</button><button class="text-button" id="changesButton" type="button">View changes</button></div>
-              </section>
+                <div class="metric-grid" id="metricGrid"></div>
+                <div class="complete-actions">
+                  <button class="button button-secondary" id="toggleBeforeAfter" type="button">Show before</button>
+                  <button class="text-button" id="viewChanges" type="button">View changes</button>
+                </div>
+              </div>
             </aside>
           </div>
 
-          <section class="change-log" id="changeLog" hidden>
-            <div class="change-log-head"><span id="changeLogName">coffee.PestoAi.patch</span><button id="closeChanges" type="button" aria-label="Close changes">×</button></div>
-            <div class="diff" id="diff"></div>
-          </section>
+          <div class="changelog mono" id="changeLog" hidden>
+            <div class="changelog-head"><span id="changeLogTitle">pestoai.patch</span><button id="closeChangeLog" type="button" aria-label="Close change log">×</button></div>
+            <div id="changeLogBody"></div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="how shell" id="how">
-      <div class="section-head"><div><p class="eyebrow">How it works</p><h2>Connect. Review. Approve.</h2></div><p>PestoAi fits around your normal engineering workflow rather than replacing it.</p></div>
-      <div class="steps"><article class="step"><span>01</span><h3>Connect</h3><p>Choose the code and product signals PestoAi can inspect.</p></article><article class="step"><span>02</span><h3>Review</h3><p>See a short list of ranked findings and expected impact.</p></article><article class="step"><span>03</span><h3>Approve</h3><p>Ship a prepared change through your normal workflow.</p></article></div>
+    <section class="process-section shell" id="how">
+      <div class="section-heading compact-heading">
+        <div><p class="eyebrow">How we work</p><h2>Problem first. Technology second.</h2></div>
+        <p>PestoAi is deliberately adaptable. The process stays clear even when the solution changes.</p>
+      </div>
+      <ol class="steps">
+        <li><span class="mono">01</span><div><h3>Understand</h3><p>We learn the problem, the people affected and the constraints that cannot be ignored.</p></div></li>
+        <li><span class="mono">02</span><div><h3>Define KPIs</h3><p>We agree how success will be measured before changing the product, workflow or codebase.</p></div></li>
+        <li><span class="mono">03</span><div><h3>Build and improve</h3><p>We implement the highest-value change, measure it and adapt the next step to the evidence.</p></div></li>
+      </ol>
     </section>
 
-    <section class="cta shell"><div class="cta-card"><h2>Start with the problem worth fixing.</h2><a class="button button-primary" href="mailto:blaisenewman@gmail.com?subject=PestoAi%20demo">Book a demo ↗</a></div></section>
+    <section class="team-section" id="team">
+      <div class="shell">
+        <div class="section-heading">
+          <div><p class="eyebrow">The team</p><h2>Small by design.</h2></div>
+          <p>Direct access to the people shaping the product, with specialist support added when the problem calls for it.</p>
+        </div>
+
+        <div class="team-grid">
+          <article class="team-card">
+            <div class="team-photo-wrap">
+              <img src="assets/team/blaise.jpg" onerror="this.onerror=null;this.src='assets/team/blaise-placeholder.svg'" alt="Blaise N., Founder and CEO of PestoAi">
+            </div>
+            <div class="team-card-copy">
+              <p class="team-role mono">FOUNDER &amp; CEO</p>
+              <h3>Blaise N.</h3>
+              <p>Computer engineering student focused on turning useful AI ideas into clear, practical improvements for real products and businesses.</p>
+            </div>
+          </article>
+
+          <article class="team-card">
+            <div class="team-photo-wrap">
+              <img src="assets/team/luke.jpg" onerror="this.onerror=null;this.src='assets/team/luke-placeholder.svg'" alt="Luke N., Technical and Strategic Adviser to PestoAi">
+            </div>
+            <div class="team-card-copy">
+              <p class="team-role mono">TECHNICAL &amp; STRATEGIC ADVISER</p>
+              <h3>Luke N.</h3>
+              <p>Computer engineering graduate with more than three years of industry experience, advising PestoAi on technical direction, delivery and product decisions.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="likes-section shell" aria-labelledby="likesTitle">
+      <div class="section-heading compact-heading">
+        <div><p class="eyebrow">Things we like</p><h2 id="likesTitle">Simple things, made well.</h2></div>
+        <p>Pesto inspired the name: easy to make, surprisingly hard to make properly. We think useful AI is much the same.</p>
+      </div>
+
+      <div class="likes-grid">
+        <article class="like-card like-card-wide">
+          <img src="assets/interests/pesto.svg" alt="Illustration of fresh pesto in a bowl">
+          <div><h3>Pesto</h3><p>Simple ingredients, balanced properly. Our metaphor for AI: easy to attempt, difficult to get exactly right.</p></div>
+        </article>
+        <article class="like-card"><img src="assets/interests/tetris.svg" alt="Illustration inspired by a falling block puzzle"><div><h3>Tetris</h3><p>Clear rules. Endless possibilities.</p></div></article>
+        <article class="like-card"><img src="assets/interests/minesweeper.svg" alt="Illustration inspired by a minesweeper grid"><div><h3>Minesweeper</h3><p>Good decisions from incomplete information.</p></div></article>
+        <article class="like-card"><img src="assets/interests/skiing.svg" alt="Illustration of a skier on a mountain"><div><h3>Skiing</h3><p>Momentum, judgement and clean lines.</p></div></article>
+        <article class="like-card"><img src="assets/interests/table-tennis.svg" alt="Illustration of table tennis paddles and a ball"><div><h3>Table tennis</h3><p>Fast feedback and small adjustments.</p></div></article>
+        <article class="like-card"><img src="assets/interests/padel.svg" alt="Illustration of a padel racket and ball"><div><h3>Padel</h3><p>Simple to begin, hard to master.</p></div></article>
+      </div>
+    </section>
+
+    <section class="contact-section" id="contact">
+      <div class="shell contact-grid">
+        <div class="contact-copy">
+          <p class="eyebrow">Send us the problem</p>
+          <h2>Share a website or codebase.</h2>
+          <p>Send a public website, GitHub or GitLab link, or describe a private codebase. We will review the information and get back in touch about the most useful next step.</p>
+          <div class="contact-points">
+            <span><i aria-hidden="true">01</i> Initial review</span>
+            <span><i aria-hidden="true">02</i> Suggested KPIs</span>
+            <span><i aria-hidden="true">03</i> Clear scope and price</span>
+          </div>
+        </div>
+
+        <form class="review-form" id="reviewForm" action="send-review.php" method="post">
+          <div class="form-row">
+            <label><span>Name</span><input type="text" name="name" autocomplete="name" required></label>
+            <label><span>Email</span><input type="email" name="email" autocomplete="email" required></label>
+          </div>
+          <label><span>Company <small>optional</small></span><input type="text" name="company" autocomplete="organization"></label>
+          <label><span>Website, repository or codebase link</span><input type="url" name="project_url" placeholder="https://…" required></label>
+          <label><span>What would you like improved?</span><textarea name="problem" rows="5" placeholder="Tell us what is slow, repetitive, confusing or difficult to measure." required></textarea></label>
+          <label class="honeypot" aria-hidden="true">Leave this blank<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+          <button class="button button-primary form-submit" type="submit">Send for review <span aria-hidden="true">→</span></button>
+          <p class="form-note">Private repository? Send the link first. We will arrange secure access separately.</p>
+          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="join-section shell" id="join">
+      <div class="join-card">
+        <div>
+          <p class="eyebrow">Join us</p>
+          <h2>Think you could help?</h2>
+          <p>We are interested in motivated people who can help us make AI more useful, measurable and properly adapted to the people using it. Technical, commercial, design and operational perspectives are all welcome.</p>
+        </div>
+        <a class="button button-light" href="mailto:blaisenewman@gmail.com?subject=PestoAi%20application&body=Hi%20PestoAi%2C%0A%0AI%27d%20like%20to%20help%20with%20your%20mission.%0A%0AHere%27s%20a%20little%20about%20me%3A%0A">Apply to join <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
   </main>
 
-  <footer class="site-footer"><div class="shell footer-inner"><a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"></span><span>PestoAi</span></a><span>AI-assisted product improvement, with human approval.</span><span class="mono">© <span id="year"></span></span></div></footer>
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <a class="brand" href="#top" aria-label="PestoAi home"><span class="brand-mark" aria-hidden="true">P</span><span>PestoAi</span></a>
+      <p>Simple AI, measured properly and adapted to your needs.</p>
+      <div class="footer-meta"><a href="mailto:blaisenewman@gmail.com">blaisenewman@gmail.com</a><span class="mono">© <span id="year"></span></span></div>
+    </div>
+  </footer>
+
+  <dialog class="about-dialog" id="aboutDialog" aria-labelledby="aboutTitle">
+    <div class="dialog-shell">
+      <button class="dialog-close" type="button" data-close-dialog aria-label="Close">×</button>
+      <div class="dialog-intro">
+        <p class="eyebrow">Find out more</p>
+        <h2 id="aboutTitle">An adaptable AI company, not another fixed tool.</h2>
+        <p>PestoAi starts with the specific problem your business needs to solve. We define meaningful KPIs, understand the systems you already use, build the improvement and measure whether it worked. The technology can change; the focus on measurable value does not.</p>
+      </div>
+
+      <div class="dialog-detail-grid">
+        <article><span class="mono">01</span><h3>You bring the problem</h3><p>A slow process, weak conversion, confusing website, expensive workflow, poor visibility or underperforming codebase.</p></article>
+        <article><span class="mono">02</span><h3>We define the KPIs</h3><p>Before building, we agree what improvement means: time saved, errors reduced, conversion raised, cost lowered or quality improved.</p></article>
+        <article><span class="mono">03</span><h3>We adapt the solution</h3><p>We work around your existing stack and constraints. It may be an AI workflow, code change, interface redesign, automation or a combination.</p></article>
+        <article><span class="mono">04</span><h3>We measure and refine</h3><p>Results are compared with the agreed KPIs. The next change is based on evidence, not on adding technology for its own sake.</p></article>
+      </div>
+
+      <div class="pricing-heading">
+        <div><p class="eyebrow">Simple pricing</p><h2>Start small. Expand when it works.</h2></div>
+        <p>Final scope is confirmed after reviewing the problem. Prices exclude VAT where applicable.</p>
+      </div>
+
+      <div class="pricing-grid">
+        <article class="price-card">
+          <p class="price-label mono">FIRST FIX</p>
+          <h3>€950</h3>
+          <p class="price-sub">One-off pilot</p>
+          <ul><li>One clearly defined problem</li><li>Initial review and KPI design</li><li>Prioritised improvement plan</li><li>One implemented improvement</li><li>Before-and-after summary</li></ul>
+          <a class="button button-secondary" href="#contact" data-close-dialog>Start with a pilot</a>
+        </article>
+        <article class="price-card featured">
+          <p class="price-label mono">BUILD &amp; IMPROVE</p>
+          <h3>From €2,500</h3>
+          <p class="price-sub">Project engagement</p>
+          <ul><li>Deeper website or codebase review</li><li>Tailored KPI framework</li><li>Design and implementation</li><li>Testing and measurable reporting</li><li>Two improvement cycles</li></ul>
+          <a class="button button-primary" href="#contact" data-close-dialog>Discuss a project</a>
+        </article>
+        <article class="price-card">
+          <p class="price-label mono">ONGOING PARTNER</p>
+          <h3>From €650<span>/month</span></h3>
+          <p class="price-sub">Continuous improvement</p>
+          <ul><li>Monthly KPI review</li><li>Prioritised improvement cycle</li><li>Experiments and optimisation</li><li>Technical and product support</li><li>No long-term lock-in</li></ul>
+          <a class="button button-secondary" href="#contact" data-close-dialog>Talk about ongoing work</a>
+        </article>
+      </div>
+    </div>
+  </dialog>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-  <script>
-    (() => {
-      "use strict";
-
-      const scenarios = {
-        coffee: {
-          name: "Northstar Coffee",
-          address: "northstar-coffee.example",
-          initialScore: "UX 34",
-          finalScore: "UX 92",
-          readyTitle: "Inspect this interface.",
-          readyText: "PestoAi will review hierarchy, responsiveness and conversion.",
-          scan: [
-            ["Reading page structure", "Mapping interface…", 18, "Parse interface structure"],
-            ["Testing responsive behaviour", "Testing breakpoints…", 43, "Audit responsive layout"],
-            ["Checking accessibility", "Checking contrast and controls…", 71, "Check accessibility signals"],
-            ["Ranking conversion fixes", "Ranking improvements…", 94, "Model conversion path"]
-          ],
-          suggestions: [
-            ["Rebuild the hierarchy", "One message and one primary action.", "+24"],
-            ["Add a responsive grid", "Replace the fixed desktop layout.", "+18"],
-            ["Improve accessibility", "Correct contrast, semantics and focus.", "+13"],
-            ["Strengthen trust", "Add local context and social proof.", "+9"]
-          ],
-          completeTitle: "A clearer, modern storefront.",
-          completeText: "The page is now responsive, focused and easier to trust.",
-          metrics: [["UX score","34","92"],["Accessibility","51","96"],["Mobile ready","No","Yes"],["Primary actions","5","1"]],
-          changes: [["file","@@ frontend/homepage @@"],["remove","- fixed-width desktop layout"],["add","+ responsive semantic grid"],["remove","- competing calls to action"],["add","+ one focused conversion path"],["add","+ accessible colour and focus system"],["add","+ local proof and opening information"]],
-          before: `
-            <div class="demo-stage legacy">
-              <div class="legacy-header"><h4>NORTHSTAR COFFEE!!!</h4><div class="legacy-nav">HOME MENU ABOUT-US CONTACT</div></div>
-              <div class="legacy-marquee">★★★★★ WELCOME TO THE BEST COFFEE IN TOWN! BREAKFAST ALL DAY! ★★★★★</div>
-              <div class="legacy-main"><h3>FRESH COFFEE &amp; GOOD TIMES :)</h3><p>We have coffee, cakes and sandwiches. Please come visit us today!!!</p><span class="fake-legacy-button">CLICK HERE FOR MENU</span><div class="legacy-columns"><div><b>OPENING HOURS</b><br>Mon–Fri 7–6<br>Sat–Sun 8–5</div><div><b>FIND US</b><br>14 Market Lane<br>Dublin</div><div><b>CALL NOW</b><br>01 555 0198<br>THANK YOU</div></div></div>
-              <div class="legacy-footer">Copyright 2013 Northstar Coffee — Best viewed on desktop</div>
-            </div>`,
-          after: `
-            <div class="demo-stage coffee-new">
-              <div class="coffee-nav"><div class="coffee-logo"><b>✦</b> Northstar</div><div class="coffee-links"><span>Menu</span><span>Our story</span><span>Visit</span></div><span class="coffee-order">Order ahead</span></div>
-              <div class="coffee-hero"><div class="coffee-copy"><small>Independent coffee · Dublin</small><h3>Your morning, made better.</h3><p>Thoughtful coffee, warm pastries and a quiet corner in the middle of the city.</p><div class="coffee-actions"><span class="coffee-primary">Explore the menu</span><span class="coffee-secondary">Find our café ↗</span></div></div><div class="coffee-art" aria-hidden="true"><div class="coffee-cup"></div></div></div>
-              <div class="coffee-bottom"><span>Open daily from 07:00</span><span>14 Market Lane, Dublin 2</span><span>Seasonal menu →</span></div>
-            </div>`
-        },
-        queries: {
-          name: "Orders API",
-          address: "api.acme.test/orders/482/items",
-          initialScore: "Perf 31",
-          finalScore: "Perf 94",
-          readyTitle: "Inspect this endpoint.",
-          readyText: "PestoAi will trace query count, latency and repeated work.",
-          scan: [
-            ["Mapping request flow", "Tracing endpoint…", 18, "Map route dependencies"],
-            ["Profiling database calls", "Counting queries…", 46, "Profile database calls"],
-            ["Finding repeated work", "Comparing query patterns…", 73, "Detect repeated lookups"],
-            ["Validating a batch query", "Benchmarking patch…", 95, "Benchmark optimized path"]
-          ],
-          suggestions: [
-            ["Remove the N+1 loop", "Fetch item records in one batch.", "−39 calls"],
-            ["Preload the relation", "Avoid a second metadata lookup.", "−1 call"],
-            ["Select required fields", "Return only response data.", "−42 KB"],
-            ["Add a regression test", "Guard the query count in CI.", "guardrail"]
-          ],
-          completeTitle: "Forty-one calls became two.",
-          completeText: "The endpoint now batches item retrieval and returns less unused data.",
-          metrics: [["DB calls","41","2"],["p95 latency","842ms","118ms"],["Payload","96KB","54KB"],["Throughput","72/s","410/s"]],
-          changes: [["file","@@ api/orders/get_items.py @@"],["remove","- for item_id in order.item_ids:"],["remove","-   items.append(Item.get(item_id))"],["add","+ items = Item.where(id__in=order.item_ids)"],["add","+ items = items.select('id', 'name', 'price')"],["file","@@ tests/test_order_queries.py @@"],["add","+ assert_query_count(request, expected=2)"]],
-          before: `
-            <div class="demo-stage query-demo"><div class="query-title"><span>orders/get_items.py</span><span class="bad">● bottleneck detected</span></div><div class="code-card"><div class="code-card-head">GET /api/orders/:id/items</div><div class="code-lines"><div class="code-line"><span class="line-no">01</span><span><b class="kw">def</b> <b class="fn">get_order_items</b>(order_id):</span></div><div class="code-line"><span class="line-no">02</span><span>&nbsp;&nbsp;order = Order.get(order_id)</span></div><div class="code-line"><span class="line-no">03</span><span>&nbsp;&nbsp;items = []</span></div><div class="code-line problem"><span class="line-no">04</span><span>&nbsp;&nbsp;<b class="kw">for</b> item_id <b class="kw">in</b> order.item_ids:</span></div><div class="code-line problem"><span class="line-no">05</span><span>&nbsp;&nbsp;&nbsp;&nbsp;items.append(Item.get(item_id))</span></div><div class="code-line"><span class="line-no">06</span><span>&nbsp;&nbsp;<b class="kw">return</b> serialize(items)</span></div></div></div><div class="query-stats"><div class="query-stat"><span>DATABASE CALLS</span><strong class="bad">41</strong></div><div class="query-stat"><span>P95 LATENCY</span><strong class="bad">842 ms</strong></div><div class="query-stat"><span>REQUESTS / SEC</span><strong>72</strong></div></div><div class="trace"><div class="trace-row"><span>SELECT * FROM orders WHERE id=482</span><b>18ms</b></div><div class="trace-row"><span>SELECT * FROM items WHERE id=771</span><b>14ms</b></div><div class="trace-row"><span>SELECT * FROM items WHERE id=772</span><b>16ms</b></div><div class="trace-row"><span>…38 more item queries</span><b>+676ms</b></div></div></div>`,
-          after: `
-            <div class="demo-stage query-demo"><div class="query-title"><span>orders/get_items.py</span><span class="good">● optimized</span></div><div class="code-card"><div class="code-card-head">GET /api/orders/:id/items</div><div class="code-lines"><div class="code-line"><span class="line-no">01</span><span><b class="kw">def</b> <b class="fn">get_order_items</b>(order_id):</span></div><div class="code-line"><span class="line-no">02</span><span>&nbsp;&nbsp;order = Order.get(order_id)</span></div><div class="code-line fixed"><span class="line-no">03</span><span>&nbsp;&nbsp;items = Item.where(id__in=order.item_ids)</span></div><div class="code-line fixed"><span class="line-no">04</span><span>&nbsp;&nbsp;items = items.select(<b class="str">"id"</b>, <b class="str">"name"</b>, <b class="str">"price"</b>)</span></div><div class="code-line"><span class="line-no">05</span><span>&nbsp;&nbsp;<b class="kw">return</b> serialize(items)</span></div></div></div><div class="query-stats"><div class="query-stat"><span>DATABASE CALLS</span><strong class="good">2</strong></div><div class="query-stat"><span>P95 LATENCY</span><strong class="good">118 ms</strong></div><div class="query-stat"><span>REQUESTS / SEC</span><strong class="good">410</strong></div></div><div class="trace"><div class="trace-row optimized"><span>SELECT id,item_ids FROM orders WHERE id=482</span><b>17ms</b></div><div class="trace-row optimized"><span>SELECT id,name,price FROM items WHERE id IN (...)</span><b>43ms</b></div></div></div>`
-        },
-        checkout: {
-          name: "Field Supply Checkout",
-          address: "fieldsupply.example/checkout",
-          initialScore: "Flow 46",
-          finalScore: "Flow 91",
-          readyTitle: "Inspect this checkout.",
-          readyText: "PestoAi will test friction, accessibility and the purchase path.",
-          scan: [
-            ["Mapping checkout steps", "Tracing purchase path…", 20, "Map form structure"],
-            ["Checking form friction", "Counting fields and decisions…", 47, "Audit input friction"],
-            ["Testing accessibility", "Checking labels and focus…", 74, "Check accessible controls"],
-            ["Modelling completion", "Estimating drop-off…", 95, "Rank conversion changes"]
-          ],
-          suggestions: [
-            ["Remove account pressure", "Use guest checkout by default.", "+11%"],
-            ["Reduce form noise", "Keep only fulfilment fields.", "−6 fields"],
-            ["Clarify the total", "Show all costs beside payment.", "+8%"],
-            ["Repair semantics", "Add labels, errors and focus.", "AA"]
-          ],
-          completeTitle: "A shorter, calmer checkout.",
-          completeText: "The flow now prioritises guest payment, clear totals and accessible fields.",
-          metrics: [["Form fields","14","8"],["Steps","4","2"],["Accessibility","58","96"],["Est. completion","61%","79%"]],
-          changes: [["file","@@ checkout/index.html @@"],["remove","- mandatory account creation prompt"],["add","+ guest checkout selected by default"],["remove","- duplicated address and marketing fields"],["add","+ concise labelled form controls"],["add","+ visible total beside payment"],["add","+ inline errors and focus states"]],
-          before: `
-            <div class="demo-stage checkout-old"><div class="old-store"><span>FIELD SUPPLY ONLINE STORE</span><span>LOGIN | CREATE ACCOUNT</span></div><div class="old-warning">You may lose your basket! Create an account before continuing.</div><h3>CHECKOUT — STEP 2 OF 4</h3><div class="old-form-grid"><div class="old-field">FIRST NAME*<div class="old-input"></div></div><div class="old-field">LAST NAME*<div class="old-input"></div></div><div class="old-field">ADDRESS LINE 1*<div class="old-input"></div></div><div class="old-field">ADDRESS LINE 2<div class="old-input"></div></div><div class="old-field">CITY*<div class="old-input"></div></div><div class="old-field">COUNTY*<div class="old-input"></div></div><div class="old-field">PHONE NUMBER*<div class="old-input"></div></div><div class="old-field">DATE OF BIRTH*<div class="old-input"></div></div></div><div class="old-total"><span>Subtotal €84.00</span><b>Delivery calculated later</b></div><div class="old-pay">CONTINUE TO PAYMENT &gt;&gt;&gt;</div></div>`,
-          after: `
-            <div class="demo-stage checkout-new"><div class="checkout-form"><div class="checkout-brand">Field Supply</div><p class="checkout-step">Checkout · Payment</p><h3>Complete your order</h3><div class="clean-fields"><div class="clean-field">Email<div class="clean-input"></div></div><div class="clean-field">Card number<div class="clean-input"></div></div><div class="clean-row"><div class="clean-field">Expiry<div class="clean-input"></div></div><div class="clean-field">CVC<div class="clean-input"></div></div></div><div class="clean-field">Name on card<div class="clean-input"></div></div></div><div class="clean-pay">Pay €90.00</div><div class="secure-copy">Secure payment · Guest checkout · No account required</div></div><aside class="order-summary"><div class="product"><div class="product-thumb"></div><div><b>Trail Pack 24L</b><small>Forest · One size</small></div><b>€84</b></div><div class="summary"><div><span>Subtotal</span><span>€84.00</span></div><div><span>Delivery</span><span>€6.00</span></div><div class="total"><span>Total</span><span>€90.00</span></div></div></aside></div>`
-        }
-      };
-
-      const byId = (id) => document.getElementById(id);
-      const elements = {
-        tabs: Array.from(document.querySelectorAll(".scenario-tab")),
-        projectName: byId("projectName"), projectStatus: byId("projectStatus"), scoreChip: byId("scoreChip"),
-        runButton: byId("runButton"), resetButton: byId("resetButton"), addressBar: byId("addressBar"), preview: byId("preview"),
-        scanOverlay: byId("scanOverlay"), scanLabel: byId("scanLabel"), scanPercent: byId("scanPercent"),
-        ready: byId("stateReady"), running: byId("stateRunning"), results: byId("stateResults"), complete: byId("stateComplete"),
-        readyTitle: byId("readyTitle"), readyText: byId("readyText"), runningTitle: byId("runningTitle"), progressBar: byId("progressBar"), scanList: byId("scanList"),
-        reportLabel: byId("reportLabel"), suggestions: byId("suggestions"), applyButton: byId("applyButton"),
-        completeTitle: byId("completeTitle"), completeText: byId("completeText"), metrics: byId("metrics"),
-        toggleButton: byId("toggleButton"), changesButton: byId("changesButton"), changeLog: byId("changeLog"), changeLogName: byId("changeLogName"), diff: byId("diff"), closeChanges: byId("closeChanges"),
-        toast: byId("toast"), year: byId("year")
-      };
-
-      let activeKey = "coffee";
-      let state = "ready";
-      let showingBefore = true;
-      let operationId = 0;
-      let toastTimer = 0;
-      const sleep = (ms) => new Promise(resolve => window.setTimeout(resolve, ms));
-      const active = () => scenarios[activeKey];
-
-      function showPanel(panel) {
-        [elements.ready, elements.running, elements.results, elements.complete].forEach(item => { item.hidden = item !== panel; });
-      }
-
-      function toast(message) {
-        window.clearTimeout(toastTimer);
-        elements.toast.textContent = message;
-        elements.toast.classList.add("show");
-        toastTimer = window.setTimeout(() => elements.toast.classList.remove("show"), 1500);
-      }
-
-      function renderPreview(mode) {
-        showingBefore = mode === "before";
-        elements.preview.innerHTML = showingBefore ? active().before : active().after;
-      }
-
-      function renderScanList() {
-        elements.scanList.innerHTML = active().scan.map((item, index) => `<li data-index="${index}"><i>○</i><span>${item[3]}</span></li>`).join("");
-      }
-
-      function updateScanList(current) {
-        Array.from(elements.scanList.children).forEach((item, index) => {
-          item.classList.toggle("active", index === current);
-          item.classList.toggle("done", index < current);
-          item.querySelector("i").textContent = index < current ? "✓" : index === current ? "◉" : "○";
-        });
-      }
-
-      function renderSuggestions() {
-        elements.suggestions.innerHTML = active().suggestions.map((item, index) => `<article class="suggestion"><span>${String(index + 1).padStart(2,"0")}</span><div><strong>${item[0]}</strong><p>${item[1]}</p></div><span class="impact-value">${item[2]}</span></article>`).join("");
-        elements.reportLabel.textContent = `PestoAi report · ${active().suggestions.length} findings`;
-      }
-
-      function renderMetrics() {
-        elements.metrics.innerHTML = active().metrics.map(item => `<div class="metric"><span>${item[0]}</span><strong><del>${item[1]}</del>→ ${item[2]}</strong></div>`).join("");
-      }
-
-      function renderDiff() {
-        elements.changeLogName.textContent = `${activeKey}.PestoAi.patch`;
-        elements.diff.innerHTML = active().changes.map(item => `<div class="diff-${item[0]}">${item[1]}</div>`).join("");
-      }
-
-      function resetCurrent(announce = false) {
-        operationId += 1;
-        state = "ready";
-        showingBefore = true;
-        renderPreview("before");
-        renderScanList();
-        renderSuggestions();
-        renderMetrics();
-        renderDiff();
-        elements.projectStatus.textContent = "Ready to scan";
-        elements.scoreChip.textContent = active().initialScore;
-        elements.scoreChip.classList.remove("complete");
-        elements.runButton.hidden = false;
-        elements.runButton.disabled = false;
-        elements.runButton.textContent = "✦ Run PestoAi";
-        elements.applyButton.disabled = false;
-        elements.applyButton.textContent = "Apply improvements →";
-        elements.toggleButton.textContent = "Show before";
-        elements.progressBar.style.width = "0%";
-        elements.scanPercent.textContent = "0%";
-        elements.scanOverlay.classList.remove("active");
-        elements.scanOverlay.setAttribute("aria-hidden", "true");
-        elements.changeLog.hidden = true;
-        showPanel(elements.ready);
-        if (announce) toast("Demo reset");
-      }
-
-      function setScenario(key, announce = true) {
-        if (!scenarios[key]) return;
-        activeKey = key;
-        elements.tabs.forEach(tab => {
-          const selected = tab.dataset.scenario === key;
-          tab.classList.toggle("active", selected);
-          tab.setAttribute("aria-selected", String(selected));
-        });
-        elements.projectName.textContent = active().name;
-        elements.addressBar.textContent = active().address;
-        elements.readyTitle.textContent = active().readyTitle;
-        elements.readyText.textContent = active().readyText;
-        elements.completeTitle.textContent = active().completeTitle;
-        elements.completeText.textContent = active().completeText;
-        resetCurrent(false);
-        if (announce) toast(`${active().name} loaded`);
-      }
-
-      async function runPestoAi() {
-        if (state !== "ready") return;
-        state = "running";
-        const myOperation = ++operationId;
-        elements.runButton.disabled = true;
-        elements.runButton.textContent = "◌ Analysing";
-        elements.projectStatus.textContent = "Analysis running";
-        elements.scanOverlay.classList.add("active");
-        elements.scanOverlay.setAttribute("aria-hidden", "false");
-        showPanel(elements.running);
-
-        for (let index = 0; index < active().scan.length; index += 1) {
-          if (myOperation !== operationId) return;
-          const item = active().scan[index];
-          elements.runningTitle.textContent = item[0];
-          elements.scanLabel.textContent = item[1];
-          elements.scanPercent.textContent = `${item[2]}%`;
-          elements.progressBar.style.width = `${item[2]}%`;
-          updateScanList(index);
-          await sleep(420);
-        }
-
-        if (myOperation !== operationId) return;
-        updateScanList(active().scan.length);
-        elements.scanLabel.textContent = "Analysis complete";
-        elements.scanPercent.textContent = "100%";
-        elements.progressBar.style.width = "100%";
-        await sleep(220);
-        if (myOperation !== operationId) return;
-
-        state = "results";
-        elements.scanOverlay.classList.remove("active");
-        elements.scanOverlay.setAttribute("aria-hidden", "true");
-        elements.projectStatus.textContent = `${active().suggestions.length} improvements proposed`;
-        elements.runButton.textContent = "✓ Analysis ready";
-        showPanel(elements.results);
-      }
-
-      async function applyPestoAi() {
-        if (state !== "results") return;
-        state = "applying";
-        const myOperation = ++operationId;
-        elements.applyButton.disabled = true;
-        elements.applyButton.textContent = "Applying…";
-        elements.scanOverlay.classList.add("active");
-        elements.scanOverlay.setAttribute("aria-hidden", "false");
-        const stages = [["Preparing patch…",22],["Applying improvements…",52],["Running checks…",79],["Validating output…",100]];
-        for (const [label, percent] of stages) {
-          if (myOperation !== operationId) return;
-          elements.scanLabel.textContent = label;
-          elements.scanPercent.textContent = `${percent}%`;
-          await sleep(330);
-        }
-        if (myOperation !== operationId) return;
-
-        renderPreview("after");
-        state = "complete";
-        elements.scanOverlay.classList.remove("active");
-        elements.scanOverlay.setAttribute("aria-hidden", "true");
-        elements.projectStatus.textContent = "Upgrade applied";
-        elements.scoreChip.textContent = active().finalScore;
-        elements.scoreChip.classList.add("complete");
-        elements.runButton.hidden = true;
-        elements.toggleButton.textContent = "Show before";
-        showPanel(elements.complete);
-        toast("PestoAi upgrade applied");
-      }
-
-      function togglePreview() {
-        if (state !== "complete") return;
-        renderPreview(showingBefore ? "after" : "before");
-        elements.toggleButton.textContent = showingBefore ? "Show after" : "Show before";
-        elements.projectStatus.textContent = showingBefore ? "Showing original" : "Upgrade applied";
-      }
-
-      elements.tabs.forEach(tab => tab.addEventListener("click", () => setScenario(tab.dataset.scenario)));
-      elements.runButton.addEventListener("click", runPestoAi);
-      elements.applyButton.addEventListener("click", applyPestoAi);
-      elements.resetButton.addEventListener("click", () => resetCurrent(true));
-      elements.toggleButton.addEventListener("click", togglePreview);
-      elements.changesButton.addEventListener("click", () => { elements.changeLog.hidden = false; elements.changeLog.scrollIntoView({behavior:"smooth", block:"nearest"}); });
-      elements.closeChanges.addEventListener("click", () => { elements.changeLog.hidden = true; });
-      document.addEventListener("keydown", event => { if (event.key === "Escape") elements.changeLog.hidden = true; });
-
-      elements.year.textContent = new Date().getFullYear();
-      setScenario("coffee", false);
-    })();
-  </script>
 </body>
 </html>

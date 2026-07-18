@@ -1,531 +1,452 @@
 (() => {
-  "use strict";
-
-  const $ = (selector, scope = document) => scope.querySelector(selector);
-  const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)];
-  const wait = (milliseconds) => new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+  const CONTACT_EMAIL = 'blaisenewman@gmail.com';
+  const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
   const scenarios = {
     coffee: {
-      name: "Northstar Coffee",
-      address: "northstar-coffee.example",
-      initialScore: "UX 34",
-      finalScore: "UX 92",
-      emptyTitle: "Inspect this interface.",
-      emptyText: "Aiify will review hierarchy, responsiveness and conversion.",
-      stages: [
-        ["Parsing interface structure", "Mapping interface…", "Parse DOM structure"],
-        ["Testing responsive behaviour", "Testing breakpoints…", "Audit responsive layout"],
-        ["Checking accessibility", "Checking contrast and controls…", "Check accessibility signals"],
-        ["Ranking conversion fixes", "Ranking improvements…", "Model conversion path"]
+      name: 'Northstar Coffee',
+      address: 'northstar-coffee.example',
+      initialScore: 'UX 34',
+      finalScore: 'UX 92',
+      readyTitle: 'Review this interface.',
+      readyText: 'PestoAi will measure hierarchy, mobile usability, accessibility and conversion clarity.',
+      scan: [
+        ['Mapping the customer journey', '18%'],
+        ['Defining useful UX KPIs', '43%'],
+        ['Reviewing mobile and accessibility', '71%'],
+        ['Preparing the highest-impact changes', '96%']
       ],
       suggestions: [
-        ["Rebuild the hierarchy", "Create one message and one primary action.", "+24"],
-        ["Add a responsive grid", "Replace fixed desktop blocks.", "+18"],
-        ["Improve accessibility", "Correct contrast, semantics and focus states.", "+13"],
-        ["Strengthen trust", "Add local context and social proof.", "+9"]
+        ['Clarify the main action', 'Replace competing buttons with one obvious path.', '+24'],
+        ['Build a responsive layout', 'Remove the fixed desktop-only structure.', '+18'],
+        ['Improve accessibility', 'Correct contrast, hierarchy and focus states.', '+13'],
+        ['Strengthen customer trust', 'Make location, hours and purpose immediately clear.', '+9']
       ],
-      completeTitle: "A clearer, modern storefront.",
-      completeText: "The page is now responsive, focused and easier to trust.",
-      metrics: [
-        ["UX score", "34", "92"],
-        ["Accessibility", "51", "96"],
-        ["Mobile ready", "No", "Yes"],
-        ["Primary actions", "5", "1"]
-      ],
+      completeTitle: 'A clearer, modern storefront.',
+      completeText: 'The page is now responsive, focused and easier for a customer to understand and use.',
+      metrics: [['UX score', '34', '92'], ['Accessibility', '51', '96'], ['Mobile ready', 'No', 'Yes'], ['Primary actions', '5', '1']],
       changes: [
-        ["file", "@@ frontend/homepage @@"],
-        ["remove", "- fixed-width desktop layout"],
-        ["add", "+ responsive semantic grid"],
-        ["remove", "- competing calls to action"],
-        ["add", "+ one focused conversion path"],
-        ["remove", "- low-contrast decorative text"],
-        ["add", "+ accessible colour and focus system"],
-        ["add", "+ social proof and local context"]
+        ['file', '@@ frontend/homepage @@'],
+        ['remove', '- fixed-width desktop layout'],
+        ['add', '+ responsive semantic grid'],
+        ['remove', '- competing calls to action'],
+        ['add', '+ one focused conversion path'],
+        ['add', '+ accessible colour and focus system'],
+        ['add', '+ clear location, hours and local context']
       ],
       before: `
-        <div class="demo-stage legacy-site">
-          <div class="legacy-head">
-            <div class="legacy-logo">NORTHSTAR COFFEE!!!</div>
-            <div class="legacy-links">
-              <button type="button" data-preview-control>HOME</button> |
-              <button type="button" data-preview-control>MENU</button> |
-              <button type="button" data-preview-control>ABOUT US</button> |
-              <button type="button" data-preview-control>CONTACT</button>
-            </div>
-          </div>
+        <div class="demo-stage legacy">
+          <div class="legacy-header"><h4>NORTHSTAR COFFEE!!!</h4><div class="legacy-nav">HOME MENU ABOUT-US CONTACT</div></div>
           <div class="legacy-marquee">★★★★★ WELCOME TO THE BEST COFFEE IN TOWN! BREAKFAST ALL DAY! ★★★★★</div>
-          <div class="legacy-body">
-            <h3>FRESH COFFEE &amp; GOOD TIMES :)</h3>
-            <p>We have coffee, cakes and sandwiches. Please come visit us today!!!</p>
-            <button class="legacy-menu" type="button" data-preview-control>CLICK HERE FOR MENU</button>
-            <div class="legacy-columns">
-              <div><strong>OPENING HOURS</strong><br>Mon–Fri 7–6<br>Sat–Sun 8–5</div>
-              <div><strong>FIND US</strong><br>14 Market Lane<br>Dublin</div>
-              <div><strong>CALL NOW</strong><br>01 555 0198<br>THANK YOU</div>
-            </div>
-          </div>
+          <div class="legacy-main"><h3>FRESH COFFEE &amp; GOOD TIMES :)</h3><p>We have coffee, cakes and sandwiches. Please come visit us today!!!</p><span class="fake-legacy-button">CLICK HERE FOR MENU</span><div class="legacy-columns"><div><b>OPENING HOURS</b><br>Mon–Fri 7–6<br>Sat–Sun 8–5</div><div><b>FIND US</b><br>14 Market Lane<br>Dublin</div><div><b>CALL NOW</b><br>01 555 0198<br>THANK YOU</div></div></div>
           <div class="legacy-footer">Copyright 2013 Northstar Coffee — Best viewed on desktop</div>
         </div>`,
       after: `
-        <div class="demo-stage modern-site">
-          <header class="modern-nav">
-            <div class="modern-logo"><span>✦</span> Northstar</div>
-            <nav aria-label="Example navigation"><span>Menu</span><span>Our story</span><span>Visit</span></nav>
-            <span class="modern-order">Order ahead</span>
-          </header>
-          <div class="modern-hero">
-            <div class="modern-copy">
-              <span class="modern-kicker">Independent coffee · Dublin</span>
-              <h3>Your morning, made better.</h3>
-              <p>Thoughtful coffee, warm pastries and a quiet corner in the middle of the city.</p>
-              <div class="modern-actions"><button type="button" data-preview-control>Explore the menu</button><span>Find our café ↗</span></div>
-              <div class="modern-proof"><b>4.9</b><span>★★★★★<br><small>from 600+ neighbours</small></span></div>
-            </div>
-            <div class="coffee-art" aria-hidden="true"><div class="cup"></div><div class="steam"></div><div class="steam two"></div></div>
-          </div>
-          <div class="modern-footer"><span>Open daily from 07:00</span><span>14 Market Lane, Dublin 2</span><span>Seasonal menu →</span></div>
+        <div class="demo-stage coffee-new">
+          <div class="coffee-nav"><div class="coffee-logo"><b>✦</b> Northstar</div><div class="coffee-links"><span>Menu</span><span>Our story</span><span>Visit</span></div><span class="coffee-order">Order ahead</span></div>
+          <div class="coffee-hero"><div class="coffee-copy"><small>Independent coffee · Dublin</small><h3>Your morning, made better.</h3><p>Thoughtful coffee, warm pastries and a quiet corner in the middle of the city.</p><div class="coffee-actions"><span class="coffee-primary">Explore the menu</span><span class="coffee-secondary">Find our café ↗</span></div></div><div class="coffee-art" aria-hidden="true"><div class="coffee-cup"></div></div></div>
+          <div class="coffee-bottom"><span>Open daily from 07:00</span><span>14 Market Lane, Dublin 2</span><span>Seasonal menu →</span></div>
         </div>`
     },
-
     queries: {
-      name: "Orders API",
-      address: "api.acme.test/orders/482/items",
-      initialScore: "Perf 31",
-      finalScore: "Perf 94",
-      emptyTitle: "Inspect this endpoint.",
-      emptyText: "Aiify will trace query count, latency and repeated work.",
-      stages: [
-        ["Mapping request flow", "Tracing endpoint…", "Map route dependencies"],
-        ["Profiling database calls", "Counting queries…", "Profile database calls"],
-        ["Finding repeated work", "Comparing query patterns…", "Detect repeated lookups"],
-        ["Validating a batch query", "Benchmarking patch…", "Benchmark optimized path"]
+      name: 'Orders API',
+      address: 'api.example/orders/482/items',
+      initialScore: 'Perf 31',
+      finalScore: 'Perf 94',
+      readyTitle: 'Review this endpoint.',
+      readyText: 'PestoAi will measure query count, latency, payload size and repeated work.',
+      scan: [
+        ['Mapping the request flow', '18%'],
+        ['Counting database calls', '45%'],
+        ['Finding repeated lookups', '72%'],
+        ['Benchmarking a batch query', '96%']
       ],
       suggestions: [
-        ["Remove the N+1 loop", "Fetch all item records in one batch.", "−39 calls"],
-        ["Preload the order relation", "Avoid a second lookup for metadata.", "−1 call"],
-        ["Select required fields", "Return only data used by the response.", "−42 KB"],
-        ["Add a query regression test", "Fail builds when query count rises.", "guardrail"]
+        ['Remove the N+1 loop', 'Fetch every required item in one batch.', '−39 calls'],
+        ['Preload the relationship', 'Avoid a second metadata lookup.', '−1 call'],
+        ['Select required fields', 'Return only data used by the response.', '−42 KB'],
+        ['Add a regression test', 'Protect the query count in CI.', 'guardrail']
       ],
-      completeTitle: "Forty-one calls became two.",
-      completeText: "The endpoint now batches item retrieval and returns less unused data.",
-      metrics: [
-        ["DB calls", "41", "2"],
-        ["p95 latency", "842ms", "118ms"],
-        ["Payload", "96KB", "54KB"],
-        ["Throughput", "72/s", "410/s"]
-      ],
+      completeTitle: 'Forty-one calls became two.',
+      completeText: 'The endpoint now batches item retrieval and returns less unused data.',
+      metrics: [['DB calls', '41', '2'], ['p95 latency', '842ms', '118ms'], ['Payload', '96KB', '54KB'], ['Throughput', '72/s', '410/s']],
       changes: [
-        ["file", "@@ api/orders/get_items.py @@"],
-        ["remove", "- for item_id in order.item_ids:"],
-        ["remove", "-   items.append(Item.get(item_id))"],
-        ["add", "+ items = Item.where(id__in=order.item_ids)"],
-        ["add", "+ items = items.select('id', 'name', 'price')"],
-        ["file", "@@ tests/test_order_queries.py @@"],
-        ["add", "+ assert_query_count(request, expected=2)"]
+        ['file', '@@ api/orders/get_items.py @@'],
+        ['remove', '- for item_id in order.item_ids:'],
+        ['remove', '-   items.append(Item.get(item_id))'],
+        ['add', "+ items = Item.where(id__in=order.item_ids)"],
+        ['add', "+ items = items.select('id', 'name', 'price')"],
+        ['file', '@@ tests/test_order_queries.py @@'],
+        ['add', '+ assert_query_count(request, expected=2)']
       ],
       before: `
-        <div class="demo-stage query-site">
-          <div class="query-head"><span>orders/get_items.py</span><span class="query-status">● bottleneck detected</span></div>
-          <div class="code-window">
-            <div class="code-title">GET /api/orders/:id/items</div>
-            <div class="code-lines">
-              <div class="code-line"><span class="no">01</span><span><b class="token-blue">def</b> <b class="token-yellow">get_order_items</b>(order_id):</span></div>
-              <div class="code-line"><span class="no">02</span><span>&nbsp;&nbsp;order = Order.get(order_id)</span></div>
-              <div class="code-line"><span class="no">03</span><span>&nbsp;&nbsp;items = []</span></div>
-              <div class="code-line bad-line"><span class="no">04</span><span>&nbsp;&nbsp;<b class="token-blue">for</b> item_id <b class="token-blue">in</b> order.item_ids:</span></div>
-              <div class="code-line bad-line"><span class="no">05</span><span>&nbsp;&nbsp;&nbsp;&nbsp;items.append(Item.get(item_id))</span></div>
-              <div class="code-line"><span class="no">06</span><span>&nbsp;&nbsp;<b class="token-blue">return</b> serialize(items)</span></div>
-            </div>
-          </div>
-          <div class="query-metrics">
-            <div><span>Database calls</span><strong class="bad">41</strong></div>
-            <div><span>p95 latency</span><strong class="bad">842 ms</strong></div>
-            <div><span>Requests/sec</span><strong>72</strong></div>
-          </div>
-          <div class="trace-list">
-            <div><span>SELECT * FROM orders WHERE id=482</span><b>18ms</b></div>
-            <div><span>SELECT * FROM items WHERE id=771</span><b>14ms</b></div>
-            <div><span>SELECT * FROM items WHERE id=772</span><b>16ms</b></div>
-            <div><span>…38 more item queries</span><b>+676ms</b></div>
-          </div>
+        <div class="demo-stage query-demo">
+          <div class="query-title"><span>orders/get_items.py</span><span class="bad">41 queries · 842 ms</span></div>
+          <div class="code-card"><div class="code-card-head">GET /orders/:id/items</div><div class="code-lines">
+            <div class="code-line"><span class="line-no">01</span><span><span class="kw">def</span> <span class="fn">get_items</span>(order_id):</span></div>
+            <div class="code-line"><span class="line-no">02</span><span>&nbsp;&nbsp;order = Order.get(order_id)</span></div>
+            <div class="code-line"><span class="line-no">03</span><span>&nbsp;&nbsp;items = []</span></div>
+            <div class="code-line problem"><span class="line-no">04</span><span>&nbsp;&nbsp;<span class="kw">for</span> item_id <span class="kw">in</span> order.item_ids:</span></div>
+            <div class="code-line problem"><span class="line-no">05</span><span>&nbsp;&nbsp;&nbsp;&nbsp;items.append(Item.get(item_id))</span></div>
+            <div class="code-line"><span class="line-no">06</span><span>&nbsp;&nbsp;<span class="kw">return</span> items</span></div>
+          </div></div>
+          <div class="query-stats"><div class="query-stat"><span>DATABASE CALLS</span><strong class="bad">41</strong></div><div class="query-stat"><span>P95 LATENCY</span><strong class="bad">842ms</strong></div><div class="query-stat"><span>PAYLOAD</span><strong>96KB</strong></div></div>
+          <div class="trace"><div class="trace-row"><span>SELECT order</span><b>8ms</b></div><div class="trace-row"><span>SELECT item × 40</span><b>733ms</b></div><div class="trace-row"><span>serialize unused fields</span><b>101ms</b></div></div>
         </div>`,
       after: `
-        <div class="demo-stage query-site">
-          <div class="query-head"><span>orders/get_items.py</span><span class="query-status good">● optimized</span></div>
-          <div class="code-window">
-            <div class="code-title">GET /api/orders/:id/items</div>
-            <div class="code-lines">
-              <div class="code-line"><span class="no">01</span><span><b class="token-blue">def</b> <b class="token-yellow">get_order_items</b>(order_id):</span></div>
-              <div class="code-line"><span class="no">02</span><span>&nbsp;&nbsp;order = Order.get(order_id)</span></div>
-              <div class="code-line good-line"><span class="no">03</span><span>&nbsp;&nbsp;items = Item.where(id__in=order.item_ids)</span></div>
-              <div class="code-line good-line"><span class="no">04</span><span>&nbsp;&nbsp;items = items.select(<b class="token-green">"id"</b>, <b class="token-green">"name"</b>, <b class="token-green">"price"</b>)</span></div>
-              <div class="code-line"><span class="no">05</span><span>&nbsp;&nbsp;<b class="token-blue">return</b> serialize(items)</span></div>
-            </div>
-          </div>
-          <div class="query-metrics">
-            <div><span>Database calls</span><strong class="good">2</strong></div>
-            <div><span>p95 latency</span><strong class="good">118 ms</strong></div>
-            <div><span>Requests/sec</span><strong class="good">410</strong></div>
-          </div>
-          <div class="trace-list optimized">
-            <div><span>SELECT id,item_ids FROM orders WHERE id=482</span><b>17ms</b></div>
-            <div><span>SELECT id,name,price FROM items WHERE id IN (...)</span><b>43ms</b></div>
-          </div>
+        <div class="demo-stage query-demo">
+          <div class="query-title"><span>orders/get_items.py</span><span class="good">2 queries · 118 ms</span></div>
+          <div class="code-card"><div class="code-card-head">GET /orders/:id/items</div><div class="code-lines">
+            <div class="code-line"><span class="line-no">01</span><span><span class="kw">def</span> <span class="fn">get_items</span>(order_id):</span></div>
+            <div class="code-line"><span class="line-no">02</span><span>&nbsp;&nbsp;order = Order.get(order_id)</span></div>
+            <div class="code-line fixed"><span class="line-no">03</span><span>&nbsp;&nbsp;items = Item.where(id__in=order.item_ids)</span></div>
+            <div class="code-line fixed"><span class="line-no">04</span><span>&nbsp;&nbsp;items = items.select(<span class="str">'id'</span>, <span class="str">'name'</span>, <span class="str">'price'</span>)</span></div>
+            <div class="code-line"><span class="line-no">05</span><span>&nbsp;&nbsp;<span class="kw">return</span> items</span></div>
+          </div></div>
+          <div class="query-stats"><div class="query-stat"><span>DATABASE CALLS</span><strong class="good">2</strong></div><div class="query-stat"><span>P95 LATENCY</span><strong class="good">118ms</strong></div><div class="query-stat"><span>PAYLOAD</span><strong class="good">54KB</strong></div></div>
+          <div class="trace"><div class="trace-row optimized"><span>SELECT order</span><b>8ms</b></div><div class="trace-row optimized"><span>SELECT items WHERE id IN (…)</span><b>74ms</b></div><div class="trace-row optimized"><span>serialize selected fields</span><b>36ms</b></div></div>
         </div>`
     },
-
     checkout: {
-      name: "Field Supply Checkout",
-      address: "fieldsupply.example/checkout",
-      initialScore: "Flow 46",
-      finalScore: "Flow 91",
-      emptyTitle: "Inspect this checkout.",
-      emptyText: "Aiify will test friction, accessibility and the purchase path.",
-      stages: [
-        ["Mapping checkout steps", "Tracing purchase path…", "Map form structure"],
-        ["Checking form friction", "Counting fields and decisions…", "Audit input friction"],
-        ["Testing accessibility", "Checking labels and focus…", "Check accessible controls"],
-        ["Modelling completion", "Estimating drop-off…", "Rank conversion changes"]
+      name: 'Field Supply Checkout',
+      address: 'fieldsupply.example/checkout',
+      initialScore: 'Conv 42',
+      finalScore: 'Conv 86',
+      readyTitle: 'Review this checkout.',
+      readyText: 'PestoAi will measure friction, form complexity, accessibility and customer confidence.',
+      scan: [
+        ['Mapping checkout steps', '20%'],
+        ['Defining completion KPIs', '44%'],
+        ['Testing form accessibility', '73%'],
+        ['Preparing a cleaner flow', '96%']
       ],
       suggestions: [
-        ["Remove account pressure", "Allow guest checkout by default.", "+11%"],
-        ["Reduce form noise", "Keep only fields needed to fulfil the order.", "−6 fields"],
-        ["Clarify the order total", "Show costs beside the payment action.", "+8%"],
-        ["Repair form semantics", "Add labels, errors and keyboard focus.", "AA"]
+        ['Reduce visible fields', 'Keep only the information required to pay.', '−5 fields'],
+        ['Group related details', 'Create a clear sequence for delivery and payment.', '+clarity'],
+        ['Improve labels and focus', 'Make the form keyboard and screen-reader friendly.', 'AA'],
+        ['Make cost and security clear', 'Show the total beside the payment action.', '+trust']
       ],
-      completeTitle: "A shorter, calmer checkout.",
-      completeText: "The flow now prioritises guest payment, clear totals and accessible fields.",
-      metrics: [
-        ["Form fields", "14", "8"],
-        ["Steps", "4", "2"],
-        ["Accessibility", "58", "96"],
-        ["Est. completion", "61%", "79%"]
-      ],
+      completeTitle: 'A shorter, clearer checkout.',
+      completeText: 'The new flow removes unnecessary decisions and makes the payment action easier to trust.',
+      metrics: [['Visible fields', '11', '6'], ['Completion', '42%', '68%'], ['Accessibility', '58', '95'], ['Average time', '4m 12s', '2m 03s']],
       changes: [
-        ["file", "@@ checkout/index.html @@"],
-        ["remove", "- mandatory account creation prompt"],
-        ["add", "+ guest checkout selected by default"],
-        ["remove", "- duplicated address and marketing fields"],
-        ["add", "+ concise labelled form controls"],
-        ["add", "+ visible order total near payment action"],
-        ["add", "+ inline errors and keyboard focus states"]
+        ['file', '@@ checkout/form @@'],
+        ['remove', '- repeated address and account fields'],
+        ['add', '+ compact delivery and payment groups'],
+        ['add', '+ persistent order summary'],
+        ['add', '+ explicit labels and focus states'],
+        ['add', '+ clear total and secure-payment note']
       ],
       before: `
         <div class="demo-stage checkout-old">
-          <div class="old-store-head"><span>FIELD SUPPLY ONLINE STORE</span><div><button type="button" data-preview-control>LOGIN</button><button type="button" data-preview-control>CREATE ACCOUNT</button></div></div>
-          <div class="warning-banner">You may lose your basket! Create an account before continuing.</div>
-          <h3>CHECKOUT — STEP 2 OF 4</h3>
-          <div class="old-form">
-            <label>FIRST NAME*<input aria-label="First name example" value="Alex"></label><label>LAST NAME*<input aria-label="Last name example" value="Morgan"></label>
-            <label>ADDRESS LINE 1*<input aria-label="Address example" value="18 River Street"></label><label>ADDRESS LINE 2<input aria-label="Second address example"></label>
-            <label>CITY*<input aria-label="City example" value="Dublin"></label><label>COUNTY*<select aria-label="County example"><option>Select county</option></select></label>
-            <label>PHONE NUMBER*<input aria-label="Phone example"></label><label>DATE OF BIRTH*<input aria-label="Birth date example"></label>
+          <div class="old-store"><span>FIELD SUPPLY ONLINE SHOP</span><span>Cart | Account | Help</span></div>
+          <div class="old-warning">IMPORTANT: Complete every field. Errors may reset this page.</div>
+          <h3>CHECKOUT / CUSTOMER INFORMATION / PAYMENT</h3>
+          <div class="old-form-grid">
+            ${['Title','First name','Middle name','Last name','Company','Phone','Email','Address line 1','Address line 2','County','Postcode','Delivery note'].map(label => `<div class="old-field">${label}<div class="old-input"></div></div>`).join('')}
           </div>
-          <div class="old-checks"><label><input type="checkbox"> Make an account for me</label><label><input type="checkbox" checked> Send daily offers</label></div>
-          <div class="old-summary"><div><span>Subtotal</span><b>€84.00</b></div><div><span>Delivery calculated later</span><b>?</b></div></div>
-          <button class="pay-old" type="button" data-preview-control>CONTINUE TO PAYMENT &gt;&gt;&gt;</button>
-          <p class="tiny-note">By continuing you agree to all terms, future marketing and account creation.</p>
+          <div class="old-total"><span>TOTAL INCLUDING DELIVERY</span><b>€84.00</b></div><div class="old-pay">CONTINUE TO PAYMENT &gt;&gt;&gt;</div>
         </div>`,
       after: `
         <div class="demo-stage checkout-new">
-          <div class="checkout-main">
-            <div class="checkout-brand">Field Supply</div>
-            <p class="checkout-step">Checkout · Payment</p>
-            <h3>Complete your order</h3>
-            <div class="clean-form">
-              <label>Email<input aria-label="Email example" value="alex@example.com"></label>
-              <label>Card number<input aria-label="Card number example" value="4242 4242 4242 4242"></label>
-              <div class="form-row"><label>Expiry<input aria-label="Expiry example" value="08 / 29"></label><label>CVC<input aria-label="CVC example" value="123"></label></div>
-              <label>Name on card<input aria-label="Name example" value="Alex Morgan"></label>
-            </div>
-            <button class="pay-new" type="button" data-preview-control>Pay €90.00</button>
-            <div class="secure-note">Secure payment · Guest checkout · No account required</div>
-          </div>
-          <aside class="checkout-summary">
-            <div class="product-line"><div class="product-thumb"></div><div><strong>Trail Pack 24L</strong><small>Forest · One size</small></div><b>€84</b></div>
-            <div class="summary-lines"><div><span>Subtotal</span><span>€84.00</span></div><div><span>Delivery</span><span>€6.00</span></div><div class="total"><span>Total</span><span>€90.00</span></div></div>
-          </aside>
+          <div class="checkout-form"><div class="checkout-brand">Field Supply</div><p class="checkout-step">Checkout · Step 1 of 2</p><h3>Delivery details</h3><div class="clean-fields"><div class="clean-field">Full name<div class="clean-input"></div></div><div class="clean-field">Email address<div class="clean-input"></div></div><div class="clean-field">Street address<div class="clean-input"></div></div><div class="clean-row"><div class="clean-field">Town or city<div class="clean-input"></div></div><div class="clean-field">Postcode<div class="clean-input"></div></div></div></div><div class="clean-pay">Continue securely · €84.00</div><div class="secure-copy">Encrypted payment · You can review before paying</div></div>
+          <aside class="order-summary"><div class="product"><span class="product-thumb"></span><span>Trail daypack<small>Forest green · 24L</small></span><b>€76</b></div><div class="summary"><div><span>Subtotal</span><b>€76</b></div><div><span>Delivery</span><b>€8</b></div><div class="total"><span>Total</span><b>€84</b></div></div></aside>
         </div>`
     }
   };
 
   const elements = {
-    tabs: $$(".scenario-tab"),
-    runButton: $("#runAiify"),
-    resetButton: $("#resetDemo"),
-    applyButton: $("#applyAiify"),
-    toggleButton: $("#toggleBeforeAfter"),
-    viewChanges: $("#viewChanges"),
-    closeChanges: $("#closeChangeLog"),
-    preview: $("#sitePreview"),
-    scanOverlay: $("#scanOverlay"),
-    scanLabel: $("#scanLabel"),
-    scanPercent: $("#scanPercent"),
-    projectName: $("#projectName"),
-    projectStatus: $("#projectStatus"),
-    addressBar: $("#addressBar"),
-    scoreChip: $("#scoreChip"),
-    analysisEmpty: $("#analysisEmpty"),
-    analysisRunning: $("#analysisRunning"),
-    analysisResults: $("#analysisResults"),
-    analysisComplete: $("#analysisComplete"),
-    analysisProgress: $("#analysisProgress"),
-    runningTitle: $("#runningTitle"),
-    scanLog: $("#scanLog"),
-    emptyTitle: $("#emptyTitle"),
-    emptyText: $("#emptyText"),
-    reportLabel: $("#reportLabel"),
-    suggestionList: $("#suggestionList"),
-    completeTitle: $("#completeTitle"),
-    completeText: $("#completeText"),
-    metricGrid: $("#metricGrid"),
-    changeLog: $("#changeLog"),
-    changeLogTitle: $("#changeLogTitle"),
-    changeLogBody: $("#changeLogBody"),
-    toast: $("#toast")
+    tabs: [...document.querySelectorAll('.scenario-tab')],
+    projectName: document.querySelector('#projectName'),
+    projectStatus: document.querySelector('#projectStatus'),
+    scoreChip: document.querySelector('#scoreChip'),
+    addressBar: document.querySelector('#addressBar'),
+    preview: document.querySelector('#previewWrap'),
+    run: document.querySelector('#runPestoAi'),
+    reset: document.querySelector('#resetDemo'),
+    apply: document.querySelector('#applyPestoAi'),
+    empty: document.querySelector('#analysisEmpty'),
+    running: document.querySelector('#analysisRunning'),
+    results: document.querySelector('#analysisResults'),
+    complete: document.querySelector('#analysisComplete'),
+    emptyTitle: document.querySelector('#emptyTitle'),
+    emptyText: document.querySelector('#emptyText'),
+    runningTitle: document.querySelector('#runningTitle'),
+    progress: document.querySelector('#analysisProgress'),
+    scanLog: document.querySelector('#scanLog'),
+    suggestions: document.querySelector('#suggestionList'),
+    completeTitle: document.querySelector('#completeTitle'),
+    completeText: document.querySelector('#completeText'),
+    metrics: document.querySelector('#metricGrid'),
+    toggle: document.querySelector('#toggleBeforeAfter'),
+    viewChanges: document.querySelector('#viewChanges'),
+    changeLog: document.querySelector('#changeLog'),
+    changeLogBody: document.querySelector('#changeLogBody'),
+    closeChangeLog: document.querySelector('#closeChangeLog'),
+    overlay: document.querySelector('#scanOverlay'),
+    scanLabel: document.querySelector('#scanLabel'),
+    scanPercent: document.querySelector('#scanPercent'),
+    toast: document.querySelector('#toast')
   };
 
-  let activeKey = "coffee";
+  let currentKey = 'coffee';
+  let phase = 'idle';
+  let showingAfter = false;
   let runToken = 0;
-  let isRunning = false;
-  let isApplied = false;
-  let showingBefore = true;
-  let toastTimer;
-
-  function activeScenario() {
-    return scenarios[activeKey];
-  }
 
   function showOnly(target) {
-    [elements.analysisEmpty, elements.analysisRunning, elements.analysisResults, elements.analysisComplete]
-      .forEach((panel) => { panel.hidden = panel !== target; });
+    [elements.empty, elements.running, elements.results, elements.complete].forEach(panel => { panel.hidden = panel !== target; });
   }
 
-  function showToast(message) {
-    window.clearTimeout(toastTimer);
-    elements.toast.textContent = message;
-    elements.toast.classList.add("show");
-    toastTimer = window.setTimeout(() => elements.toast.classList.remove("show"), 1500);
+  function current() { return scenarios[currentKey]; }
+
+  function renderPreview() {
+    elements.preview.innerHTML = showingAfter ? current().after : current().before;
   }
 
-  function renderPreview(mode) {
-    const scenario = activeScenario();
-    showingBefore = mode === "before";
-    elements.preview.innerHTML = showingBefore ? scenario.before : scenario.after;
-  }
-
-  function renderLog(scenario) {
-    elements.scanLog.innerHTML = scenario.stages
-      .map((stage, index) => `<li data-step="${index}"><span>○</span>${stage[2]}</li>`)
-      .join("");
-  }
-
-  function renderSuggestions(scenario) {
-    elements.suggestionList.innerHTML = scenario.suggestions
-      .map((item, index) => `
-        <div class="suggestion">
-          <span class="mono">${String(index + 1).padStart(2, "0")}</span>
-          <div><strong>${item[0]}</strong><p>${item[1]}</p></div>
-          <span class="mono">${item[2]}</span>
-        </div>`)
-      .join("");
-    elements.reportLabel.textContent = `AIIFY REPORT / ${scenario.suggestions.length} FINDINGS`;
-  }
-
-  function renderMetrics(scenario) {
-    elements.metricGrid.innerHTML = scenario.metrics
-      .map((item) => `<div><span>${item[0]}</span><strong><del>${item[1]}</del>${item[2]}</strong></div>`)
-      .join("");
-  }
-
-  function renderChangeLog(scenario) {
-    elements.changeLogTitle.textContent = `${activeKey}.aiify.patch`;
-    elements.changeLogBody.innerHTML = scenario.changes
-      .map(([type, text]) => `<div class="diff-${type}">${text}</div>`)
-      .join("");
-  }
-
-  function resetPanels() {
-    const scenario = activeScenario();
+  function renderScenario() {
+    const scenario = current();
+    phase = 'idle';
+    showingAfter = false;
     runToken += 1;
-    isRunning = false;
-    isApplied = false;
-    showingBefore = true;
-
-    elements.scanOverlay.classList.remove("active");
-    elements.scanOverlay.setAttribute("aria-hidden", "true");
-    elements.scanPercent.textContent = "0%";
-    elements.analysisProgress.style.width = "0%";
-    elements.changeLog.hidden = true;
-    elements.projectStatus.textContent = "ready to scan";
-    elements.scoreChip.textContent = scenario.initialScore;
-    elements.scoreChip.classList.remove("complete");
-
-    elements.runButton.hidden = false;
-    elements.runButton.disabled = false;
-    elements.runButton.innerHTML = '<span aria-hidden="true">✦</span> Run Aiify';
-    elements.applyButton.disabled = false;
-    elements.applyButton.innerHTML = 'Apply improvements <span aria-hidden="true">→</span>';
-    elements.toggleButton.textContent = "Show before";
-
-    $$("li", elements.scanLog).forEach((item) => {
-      item.classList.remove("active", "done");
-      $("span", item).textContent = "○";
-    });
-
-    showOnly(elements.analysisEmpty);
-  }
-
-  function setScenario(key, announce = false) {
-    if (!scenarios[key]) return;
-    activeKey = key;
-    const scenario = activeScenario();
-
-    elements.tabs.forEach((tab) => {
-      const selected = tab.dataset.scenario === key;
-      tab.classList.toggle("active", selected);
-      tab.setAttribute("aria-selected", String(selected));
-    });
-
     elements.projectName.textContent = scenario.name;
+    elements.projectStatus.textContent = 'ready to review';
+    elements.scoreChip.textContent = scenario.initialScore;
+    elements.scoreChip.classList.remove('complete');
     elements.addressBar.textContent = scenario.address;
-    elements.emptyTitle.textContent = scenario.emptyTitle;
-    elements.emptyText.textContent = scenario.emptyText;
-    elements.completeTitle.textContent = scenario.completeTitle;
-    elements.completeText.textContent = scenario.completeText;
-
-    renderPreview("before");
-    renderLog(scenario);
-    renderSuggestions(scenario);
-    renderMetrics(scenario);
-    renderChangeLog(scenario);
-    resetPanels();
-
-    if (announce) showToast(`${scenario.name} demo loaded`);
+    elements.emptyTitle.textContent = scenario.readyTitle;
+    elements.emptyText.textContent = scenario.readyText;
+    elements.run.disabled = false;
+    elements.run.innerHTML = '<span aria-hidden="true">✦</span> Run PestoAi';
+    elements.apply.disabled = false;
+    elements.apply.innerHTML = 'Apply improvements <span aria-hidden="true">→</span>';
+    elements.progress.style.width = '0%';
+    elements.overlay.classList.remove('active');
+    elements.overlay.setAttribute('aria-hidden', 'true');
+    elements.changeLog.hidden = true;
+    elements.toggle.textContent = 'Show before';
+    renderPreview();
+    showOnly(elements.empty);
   }
 
-  function setLogState(index) {
-    $$("li", elements.scanLog).forEach((item, itemIndex) => {
-      item.classList.toggle("active", itemIndex === index);
-      item.classList.toggle("done", itemIndex < index);
-      $("span", item).textContent = itemIndex < index ? "✓" : itemIndex === index ? "◉" : "○";
+  function setScenario(key) {
+    if (!scenarios[key] || phase === 'running') return;
+    currentKey = key;
+    elements.tabs.forEach(tab => {
+      const selected = tab.dataset.scenario === key;
+      tab.classList.toggle('active', selected);
+      tab.setAttribute('aria-selected', String(selected));
     });
+    renderScenario();
+  }
+
+  function renderScanLog() {
+    elements.scanLog.innerHTML = current().scan.map(([label], index) => `<li data-step="${index}"><span>○</span>${label}</li>`).join('');
   }
 
   async function runAnalysis() {
-    if (isRunning || isApplied) return;
-    isRunning = true;
+    if (phase === 'running') return;
+    phase = 'running';
+    showingAfter = false;
+    renderPreview();
     const token = ++runToken;
-    const scenario = activeScenario();
-    const progressPoints = [18, 43, 70, 92];
+    const scenario = current();
+    elements.run.disabled = true;
+    elements.run.innerHTML = '<span aria-hidden="true">◌</span> Analysing…';
+    elements.projectStatus.textContent = 'analysis in progress';
+    elements.overlay.classList.add('active');
+    elements.overlay.setAttribute('aria-hidden', 'false');
+    renderScanLog();
+    showOnly(elements.running);
 
-    elements.runButton.disabled = true;
-    elements.runButton.innerHTML = '<span aria-hidden="true">◌</span> Analysing';
-    elements.projectStatus.textContent = "analysis running";
-    elements.scanOverlay.classList.add("active");
-    elements.scanOverlay.setAttribute("aria-hidden", "false");
-    showOnly(elements.analysisRunning);
-
-    for (let index = 0; index < scenario.stages.length; index += 1) {
+    const logItems = [...elements.scanLog.children];
+    for (let i = 0; i < scenario.scan.length; i += 1) {
       if (token !== runToken) return;
-      const [title, label] = scenario.stages[index];
-      setLogState(index);
-      elements.runningTitle.textContent = title;
+      const [label, percent] = scenario.scan[i];
+      elements.runningTitle.textContent = label;
       elements.scanLabel.textContent = label;
-      elements.scanPercent.textContent = `${progressPoints[index]}%`;
-      elements.analysisProgress.style.width = `${progressPoints[index]}%`;
-      await wait(600);
+      elements.scanPercent.textContent = percent;
+      elements.progress.style.width = percent;
+      logItems.forEach((item, index) => {
+        item.classList.toggle('active', index === i);
+        if (index < i) {
+          item.classList.add('done');
+          item.querySelector('span').textContent = '✓';
+        }
+      });
+      await wait(520);
     }
 
     if (token !== runToken) return;
-    setLogState(scenario.stages.length);
-    elements.scanLabel.textContent = "Analysis complete";
-    elements.scanPercent.textContent = "100%";
-    elements.analysisProgress.style.width = "100%";
-    await wait(300);
-
-    if (token !== runToken) return;
-    elements.scanOverlay.classList.remove("active");
-    elements.scanOverlay.setAttribute("aria-hidden", "true");
+    logItems.forEach(item => { item.classList.remove('active'); item.classList.add('done'); item.querySelector('span').textContent = '✓'; });
+    elements.progress.style.width = '100%';
+    elements.scanPercent.textContent = '100%';
+    await wait(260);
+    elements.overlay.classList.remove('active');
+    elements.overlay.setAttribute('aria-hidden', 'true');
+    elements.suggestions.innerHTML = scenario.suggestions.map(([title, text, impact], index) => `
+      <div class="suggestion"><span>${String(index + 1).padStart(2, '0')}</span><div><strong>${title}</strong><p>${text}</p></div><span class="impact-value">${impact}</span></div>`).join('');
     elements.projectStatus.textContent = `${scenario.suggestions.length} improvements proposed`;
-    elements.runButton.innerHTML = '<span aria-hidden="true">✓</span> Analysis ready';
-    showOnly(elements.analysisResults);
-    isRunning = false;
+    elements.run.innerHTML = '<span aria-hidden="true">✓</span> Analysis ready';
+    phase = 'results';
+    showOnly(elements.results);
   }
 
   async function applyImprovements() {
-    if (isRunning || isApplied) return;
-    isRunning = true;
+    if (phase !== 'results') return;
+    phase = 'running';
     const token = ++runToken;
-    const scenario = activeScenario();
-    const stages = [
-      ["Preparing patch…", "24%"],
-      ["Applying improvements…", "51%"],
-      ["Running checks…", "79%"],
-      ["Validating output…", "100%"]
-    ];
+    elements.apply.disabled = true;
+    elements.apply.textContent = 'Applying improvements…';
+    elements.overlay.classList.add('active');
+    elements.overlay.setAttribute('aria-hidden', 'false');
 
-    elements.applyButton.disabled = true;
-    elements.applyButton.textContent = "Applying…";
-    elements.scanOverlay.classList.add("active");
-    elements.scanOverlay.setAttribute("aria-hidden", "false");
-
+    const stages = [['Preparing the change…', '28%'], ['Applying improvements…', '61%'], ['Checking the agreed KPIs…', '87%'], ['Ready for review', '100%']];
     for (const [label, percent] of stages) {
       if (token !== runToken) return;
       elements.scanLabel.textContent = label;
       elements.scanPercent.textContent = percent;
-      await wait(500);
+      await wait(430);
     }
 
     if (token !== runToken) return;
-    renderPreview("after");
-    elements.scanOverlay.classList.remove("active");
-    elements.scanOverlay.setAttribute("aria-hidden", "true");
-    elements.projectStatus.textContent = "upgrade applied";
+    showingAfter = true;
+    renderPreview();
+    elements.overlay.classList.remove('active');
+    elements.overlay.setAttribute('aria-hidden', 'true');
+    const scenario = current();
+    elements.projectStatus.textContent = 'improvement applied';
     elements.scoreChip.textContent = scenario.finalScore;
-    elements.scoreChip.classList.add("complete");
-    elements.runButton.hidden = true;
-    elements.toggleButton.textContent = "Show before";
-    showOnly(elements.analysisComplete);
-    isApplied = true;
-    isRunning = false;
-    showToast("Aiify upgrade applied");
+    elements.scoreChip.classList.add('complete');
+    elements.completeTitle.textContent = scenario.completeTitle;
+    elements.completeText.textContent = scenario.completeText;
+    elements.metrics.innerHTML = scenario.metrics.map(([label, before, after]) => `<div class="metric"><span>${label}</span><strong><del>${before}</del> → ${after}</strong></div>`).join('');
+    elements.toggle.textContent = 'Show before';
+    elements.apply.disabled = false;
+    phase = 'complete';
+    showOnly(elements.complete);
+    showToast('PestoAi improvement applied');
   }
 
-  function toggleBeforeAfter() {
-    if (!isApplied || isRunning) return;
-    const nextMode = showingBefore ? "after" : "before";
-    renderPreview(nextMode);
-    elements.toggleButton.textContent = showingBefore ? "Show after" : "Show before";
-    elements.projectStatus.textContent = showingBefore ? "showing original" : "upgrade applied";
+  function togglePreview() {
+    if (phase !== 'complete') return;
+    showingAfter = !showingAfter;
+    renderPreview();
+    elements.toggle.textContent = showingAfter ? 'Show before' : 'Show improved';
   }
 
-  elements.tabs.forEach((tab) => {
-    tab.addEventListener("click", () => setScenario(tab.dataset.scenario, true));
-  });
-  elements.runButton.addEventListener("click", runAnalysis);
-  elements.applyButton.addEventListener("click", applyImprovements);
-  elements.resetButton.addEventListener("click", () => {
-    setScenario(activeKey);
-    showToast("Demo reset");
-  });
-  elements.toggleButton.addEventListener("click", toggleBeforeAfter);
-  elements.viewChanges.addEventListener("click", () => { elements.changeLog.hidden = false; });
-  elements.closeChanges.addEventListener("click", () => { elements.changeLog.hidden = true; });
+  function renderChanges() {
+    elements.changeLogBody.innerHTML = `<div class="diff">${current().changes.map(([type, line]) => `<div class="diff-${type}">${line}</div>`).join('')}</div>`;
+    elements.changeLog.hidden = false;
+    elements.changeLog.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
 
-  elements.preview.addEventListener("click", (event) => {
-    const control = event.target.closest("a, button, [data-preview-control]");
-    if (!control) return;
+  function resetDemo() {
+    renderScenario();
+    showToast('Demo reset');
+  }
+
+  let toastTimer;
+  function showToast(message) {
+    clearTimeout(toastTimer);
+    elements.toast.textContent = message;
+    elements.toast.classList.add('show');
+    toastTimer = setTimeout(() => elements.toast.classList.remove('show'), 2200);
+  }
+
+  elements.tabs.forEach(tab => tab.addEventListener('click', () => setScenario(tab.dataset.scenario)));
+  elements.run.addEventListener('click', runAnalysis);
+  elements.apply.addEventListener('click', applyImprovements);
+  elements.reset.addEventListener('click', resetDemo);
+  elements.toggle.addEventListener('click', togglePreview);
+  elements.viewChanges.addEventListener('click', renderChanges);
+  elements.closeChangeLog.addEventListener('click', () => { elements.changeLog.hidden = true; });
+
+  // About and pricing dialog
+  const dialog = document.querySelector('#aboutDialog');
+  document.querySelectorAll('[data-open-dialog="aboutDialog"]').forEach(button => button.addEventListener('click', () => {
+    if (typeof dialog.showModal === 'function') dialog.showModal();
+    else dialog.setAttribute('open', '');
+  }));
+  document.querySelectorAll('[data-close-dialog]').forEach(button => button.addEventListener('click', () => dialog.close()));
+  dialog.addEventListener('click', event => {
+    const rect = dialog.getBoundingClientRect();
+    const outside = event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
+    if (outside) dialog.close();
+  });
+
+  // Mobile navigation
+  const menuButton = document.querySelector('#menuButton');
+  const mobileMenu = document.querySelector('#mobileMenu');
+  menuButton.addEventListener('click', () => {
+    const open = mobileMenu.hidden;
+    mobileMenu.hidden = !open;
+    menuButton.setAttribute('aria-expanded', String(open));
+    menuButton.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+  });
+  mobileMenu.addEventListener('click', event => {
+    if (event.target.matches('a, button')) {
+      mobileMenu.hidden = true;
+      menuButton.setAttribute('aria-expanded', 'false');
+      menuButton.setAttribute('aria-label', 'Open navigation');
+    }
+  });
+
+  // Review form: PHP on normal hosting, email fallback on static hosting/local files.
+  const form = document.querySelector('#reviewForm');
+  const formStatus = document.querySelector('#formStatus');
+  const submitButton = form.querySelector('button[type="submit"]');
+
+  function mailtoFallback(data) {
+    const subject = encodeURIComponent(`PestoAi review request — ${data.get('company') || data.get('name')}`);
+    const body = encodeURIComponent([
+      `Name: ${data.get('name')}`,
+      `Email: ${data.get('email')}`,
+      `Company: ${data.get('company') || 'Not provided'}`,
+      `Website / repository: ${data.get('project_url')}`,
+      '',
+      'Problem to review:',
+      data.get('problem')
+    ].join('\n'));
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+  }
+
+  form.addEventListener('submit', async event => {
     event.preventDefault();
-    event.stopPropagation();
-    showToast("Example preview only");
+    if (!form.reportValidity()) return;
+    const data = new FormData(form);
+    if (data.get('website')) return;
+
+    if (location.protocol === 'file:' || location.hostname.endsWith('github.io')) {
+      formStatus.textContent = 'Opening your email app with the review details…';
+      formStatus.className = 'form-status';
+      mailtoFallback(data);
+      return;
+    }
+
+    submitButton.disabled = true;
+    submitButton.textContent = 'Sending…';
+    formStatus.textContent = '';
+    formStatus.className = 'form-status';
+
+    try {
+      const response = await fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.success) throw new Error(result.message || 'The form could not be sent.');
+      form.reset();
+      formStatus.textContent = 'Received. We will review it and get back in touch.';
+      formStatus.className = 'form-status success';
+      showToast('Review request sent');
+    } catch (error) {
+      formStatus.textContent = 'The server form is unavailable here. Opening your email app instead…';
+      formStatus.className = 'form-status error';
+      mailtoFallback(data);
+    } finally {
+      submitButton.disabled = false;
+      submitButton.innerHTML = 'Send for review <span aria-hidden="true">→</span>';
+    }
   });
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !elements.changeLog.hidden) elements.changeLog.hidden = true;
-  });
-
-  $("#year").textContent = new Date().getFullYear();
-  setScenario(activeKey);
+  document.querySelector('#year').textContent = new Date().getFullYear();
+  renderScenario();
 })();

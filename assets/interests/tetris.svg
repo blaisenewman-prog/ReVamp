@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700">
+  <rect width="900" height="700" fill="#09140d"/>
+  <g opacity=".18" stroke="#77d48d"><path d="M0 100h900M0 200h900M0 300h900M0 400h900M0 500h900M0 600h900"/><path d="M100 0v700M200 0v700M300 0v700M400 0v700M500 0v700M600 0v700M700 0v700M800 0v700"/></g>
+  <g stroke="#07100b" stroke-width="10">
+    <g fill="#77d48d"><rect x="210" y="390" width="100" height="100"/><rect x="310" y="390" width="100" height="100"/><rect x="410" y="390" width="100" height="100"/><rect x="310" y="290" width="100" height="100"/></g>
+    <g fill="#d6f36d"><rect x="510" y="490" width="100" height="100"/><rect x="610" y="490" width="100" height="100"/><rect x="610" y="390" width="100" height="100"/><rect x="610" y="290" width="100" height="100"/></g>
+    <g fill="#62d9c8"><rect x="110" y="490" width="100" height="100"/><rect x="210" y="490" width="100" height="100"/><rect x="310" y="490" width="100" height="100"/><rect x="410" y="490" width="100" height="100"/></g>
+    <g fill="#b6ef9f" opacity=".8"><rect x="410" y="90" width="100" height="100"/><rect x="410" y="190" width="100" height="100"/><rect x="510" y="190" width="100" height="100"/><rect x="510" y="290" width="100" height="100"/></g>
+  </g>
+</svg>

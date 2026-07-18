@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700">
+  <rect width="900" height="700" fill="#0a160e"/>
+  <g transform="translate(150 65)">
+    <rect width="600" height="570" rx="24" fill="#10251a" stroke="#31563d" stroke-width="4"/>
+    <g stroke="#2f5039" stroke-width="3">
+      <path d="M100 0v570M200 0v570M300 0v570M400 0v570M500 0v570"/>
+      <path d="M0 95h600M0 190h600M0 285h600M0 380h600M0 475h600"/>
+    </g>
+    <g font-family="Arial" font-size="46" font-weight="700" text-anchor="middle">
+      <text x="50" y="65" fill="#77d48d">1</text><text x="250" y="65" fill="#b6ef9f">2</text><text x="450" y="65" fill="#62d9c8">1</text>
+      <text x="150" y="160" fill="#62d9c8">2</text><text x="350" y="160" fill="#77d48d">1</text><text x="550" y="160" fill="#b6ef9f">2</text>
+      <text x="50" y="350" fill="#62d9c8">1</text><text x="250" y="350" fill="#77d48d">3</text><text x="550" y="350" fill="#62d9c8">1</text>
+      <text x="150" y="540" fill="#b6ef9f">2</text><text x="450" y="540" fill="#77d48d">1</text>
+    </g>
+    <g fill="#d6f36d"><path d="M350 240v60M320 270h60M329 249l42 42M371 249l-42 42" stroke="#d6f36d" stroke-width="9"/><circle cx="350" cy="270" r="22"/></g>
+    <g fill="#77d48d"><path d="M150 430v60M120 460h60M129 439l42 42M171 439l-42 42" stroke="#77d48d" stroke-width="9"/><circle cx="150" cy="460" r="22"/></g>
+  </g>
+</svg>
