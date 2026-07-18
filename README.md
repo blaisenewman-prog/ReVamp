@@ -1,56 +1,112 @@
 # PestoAi website
 
-A responsive, static-first PestoAi landing site with:
+A responsive PestoAi landing site with:
 
-- Three working interactive demos
-- Find out more and pricing dialog
-- Team section with replaceable profile photos
-- “Things we like” image cards
+- Three interactive browser demos
+- Find-out-more and pricing dialog
+- Public-page redesign generator that returns one downloadable `index.html`
 - Website / repository review form
-- Join-us call to action
+- Compact team and Pesto notes at the bottom
 
 ## Uploading the site
 
-Upload the entire contents of this folder into the website directory on your hosting account. Keep the folder structure intact.
+Upload the **entire contents** of this folder to PHP hosting. The interactive demos work on static hosting, but these two features require PHP:
 
-The contact form uses `send-review.php`, so it works on ordinary PHP hosting such as cPanel. It sends review requests to:
+- `send-review.php` — sends contact requests
+- `generate-site.php` — reads a public webpage and calls the OpenAI Responses API
 
-`blaisenewman@gmail.com`
+The PHP cURL extension must be enabled for the redesign generator.
 
-To change the recipient, edit this line near the top of `send-review.php`:
+## 1. Configure the OpenAI redesign generator
 
-```php
-const REVIEW_EMAIL = 'blaisenewman@gmail.com';
+Open:
+
+```text
+private/config.php
 ```
 
-When the site is hosted somewhere without PHP, such as GitHub Pages, the form automatically opens the visitor’s email application with the details pre-filled instead.
+The preferred setup is to define `OPENAI_API_KEY` as a server environment variable. On ordinary shared hosting, the key may instead be pasted into the `api_key` field:
 
-## Adding team photographs
+```php
+'openai' => [
+    'api_key' => 'YOUR_OPENAI_API_KEY',
+    'model' => 'gpt-5-mini',
+    'max_output_tokens' => 6000,
+],
+```
 
-Place the two photos here using these exact filenames:
+Do **not** put the key in `script.js` or `index.html`. The browser sends only the website URL to `generate-site.php`; the PHP file calls OpenAI from the server.
 
-- `assets/team/blaise.jpg`
-- `assets/team/luke.jpg`
+The included limits are:
 
-Recommended format:
+- 6,000 maximum output tokens per redesign
+- Three generations per IP address per hour
+- One public HTML page per generation
+- Maximum page/source sizes and short network timeouts
+- Private, localhost and reserved IP ranges blocked
+- Three redirects maximum
 
-- Portrait orientation
-- At least 1200 × 1500 pixels
-- JPG format
-- Faces centred with a little space around the head
+Generated pages are previewed inside a sandboxed iframe. The visitor can then view or download the returned `index.html`.
 
-Until those files are added, the site automatically displays the supplied BN and LN placeholders.
+### What the generator cannot read
 
-## Pricing
+It will not reliably work with:
 
-Pricing is currently set to:
+- Private repositories or login-only pages
+- Sites that block automated requests
+- Pages whose useful content exists only after complex JavaScript execution
+- Entire multi-page websites in one request
 
-- First Fix — €950 one-off
-- Build & Improve — from €2,500
-- Ongoing Partner — from €650/month
+It is intentionally a simple one-page concept generator, not a production website migration system.
 
-Edit the pricing cards near the bottom of `index.html` if these figures change.
+## 2. Configure reliable contact email
 
-## Testing the contact form locally
+The contact form always provides a Gmail and copy-message fallback. For automatic delivery, configure SMTP in:
 
-The page itself can be opened directly. PHP sending needs a PHP server and mail configuration. On local files, the email fallback is used automatically.
+```text
+private/config.php
+```
+
+Example for a Gmail account using a Google App Password:
+
+```php
+'smtp' => [
+    'host' => 'smtp.gmail.com',
+    'port' => 587,
+    'encryption' => 'tls',
+    'username' => 'youraddress@gmail.com',
+    'password' => 'YOUR_16_CHARACTER_APP_PASSWORD',
+    'from_email' => 'youraddress@gmail.com',
+    'from_name' => 'PestoAi Website',
+],
+```
+
+The form sends to:
+
+```text
+blaisenewman@gmail.com
+```
+
+Change `contact_email` in the same config file to use another inbox.
+
+When SMTP is empty, `send-review.php` also attempts the hosting provider's standard PHP `mail()` function. If neither delivery method is available, the page clearly displays **Open in Gmail** and **Copy message details** rather than silently failing.
+
+## Security notes
+
+- Keep `private/config.php` out of source-control repositories after adding secrets.
+- The included `private/.htaccess` blocks direct access on Apache hosting.
+- On Nginx, separately deny web access to the `/private/` directory.
+- Use an OpenAI project key with an appropriate project budget and usage limit.
+- Do not remove the URL validation and private-network protections from `generate-site.php`.
+
+## Main files
+
+```text
+index.html             Page structure
+styles.css             Site styling
+script.js              Demos, generator UI and contact fallbacks
+generate-site.php      Safe URL fetch + OpenAI Responses API call
+send-review.php        SMTP / PHP mail contact handler
+private/config.php     Server credentials and limits
+assets/pestoai-mark.svg
+```

@@ -22,8 +22,8 @@
 
       <nav class="desktop-nav" aria-label="Primary navigation">
         <a href="#demo">Demo</a>
+        <a href="#redesign">Redesign a site</a>
         <button class="nav-button" type="button" data-open-dialog="aboutDialog">Find out more</button>
-        <a href="#team">Team</a>
         <a href="#contact">Contact</a>
       </nav>
 
@@ -38,10 +38,9 @@
 
     <nav class="mobile-menu shell" id="mobileMenu" aria-label="Mobile navigation" hidden>
       <a href="#demo">Demo</a>
+      <a href="#redesign">Redesign a site</a>
       <button type="button" data-open-dialog="aboutDialog">Find out more</button>
-      <a href="#team">Team</a>
       <a href="#contact">Contact</a>
-      <a href="#join">Join us</a>
     </nav>
   </header>
 
@@ -202,55 +201,46 @@
       </ol>
     </section>
 
-    <section class="team-section" id="team">
-      <div class="shell">
-        <div class="section-heading">
-          <div><p class="eyebrow">The team</p><h2>Small by design.</h2></div>
-          <p>Direct access to the people shaping the product, with specialist support added when the problem calls for it.</p>
+    <section class="generator-section" id="redesign">
+      <div class="shell generator-grid">
+        <div class="generator-copy">
+          <p class="eyebrow">Try PestoAi</p>
+          <h2>See a cleaner version of your site.</h2>
+          <p>Paste a public webpage link. PestoAi reads that page and creates a new, standalone <code>index.html</code> that you can preview and download.</p>
+          <ul class="generator-notes">
+            <li>One public page at a time</li>
+            <li>6,000 output-token limit</li>
+            <li>Private, login-only and bot-blocked pages cannot be read</li>
+          </ul>
+
+          <form class="generator-form" id="siteGeneratorForm" action="generate-site.php" method="post">
+            <label><span>Website link</span><input type="url" name="site_url" placeholder="https://example.com" required></label>
+            <label><span>What should improve? <small>optional</small></span><textarea name="brief" rows="3" maxlength="1200" placeholder="For example: simplify it, improve mobile layout and make the main action clearer."></textarea></label>
+            <label class="honeypot" aria-hidden="true">Leave this blank<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label>
+            <button class="button button-primary generator-submit" type="submit">Generate redesign <span aria-hidden="true">✦</span></button>
+            <p class="generator-status" id="generatorStatus" role="status" aria-live="polite"></p>
+          </form>
         </div>
 
-        <div class="team-grid">
-          <article class="team-card">
-            <div class="team-photo-wrap">
-              <img src="assets/team/blaise.jpg" onerror="this.onerror=null;this.src='assets/team/blaise-placeholder.svg'" alt="Blaise N., Founder and CEO of PestoAi">
+        <div class="generator-result" id="generatorResult">
+          <div class="generator-empty" id="generatorEmpty">
+            <span class="mono">index.html</span>
+            <h3>Your generated preview appears here.</h3>
+            <p>The output is displayed in a restricted preview before you download it.</p>
+          </div>
+          <div class="generator-preview" id="generatorPreview" hidden>
+            <div class="generator-toolbar">
+              <span class="mono" id="generatedFileName">generated/index.html</span>
+              <div>
+                <button class="text-button" id="viewGeneratedHtml" type="button">View HTML</button>
+                <button class="button button-small button-secondary" id="downloadGeneratedHtml" type="button">Download index.html</button>
+              </div>
             </div>
-            <div class="team-card-copy">
-              <p class="team-role mono">FOUNDER &amp; CEO</p>
-              <h3>Blaise N.</h3>
-              <p>Computer engineering student focused on turning useful AI ideas into clear, practical improvements for real products and businesses.</p>
-            </div>
-          </article>
-
-          <article class="team-card">
-            <div class="team-photo-wrap">
-              <img src="assets/team/luke.jpg" onerror="this.onerror=null;this.src='assets/team/luke-placeholder.svg'" alt="Luke N., Technical and Strategic Adviser to PestoAi">
-            </div>
-            <div class="team-card-copy">
-              <p class="team-role mono">TECHNICAL &amp; STRATEGIC ADVISER</p>
-              <h3>Luke N.</h3>
-              <p>Computer engineering graduate with more than three years of industry experience, advising PestoAi on technical direction, delivery and product decisions.</p>
-            </div>
-          </article>
+            <iframe id="generatedSiteFrame" title="Generated website preview" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe>
+            <pre class="generated-code" id="generatedCode" hidden><code></code></pre>
+            <p class="generator-usage mono" id="generatorUsage"></p>
+          </div>
         </div>
-      </div>
-    </section>
-
-    <section class="likes-section shell" aria-labelledby="likesTitle">
-      <div class="section-heading compact-heading">
-        <div><p class="eyebrow">Things we like</p><h2 id="likesTitle">Simple things, made well.</h2></div>
-        <p>Pesto inspired the name: easy to make, surprisingly hard to make properly. We think useful AI is much the same.</p>
-      </div>
-
-      <div class="likes-grid">
-        <article class="like-card like-card-wide">
-          <img src="assets/interests/pesto.svg" alt="Illustration of fresh pesto in a bowl">
-          <div><h3>Pesto</h3><p>Simple ingredients, balanced properly. Our metaphor for AI: easy to attempt, difficult to get exactly right.</p></div>
-        </article>
-        <article class="like-card"><img src="assets/interests/tetris.svg" alt="Illustration inspired by a falling block puzzle"><div><h3>Tetris</h3><p>Clear rules. Endless possibilities.</p></div></article>
-        <article class="like-card"><img src="assets/interests/minesweeper.svg" alt="Illustration inspired by a minesweeper grid"><div><h3>Minesweeper</h3><p>Good decisions from incomplete information.</p></div></article>
-        <article class="like-card"><img src="assets/interests/skiing.svg" alt="Illustration of a skier on a mountain"><div><h3>Skiing</h3><p>Momentum, judgement and clean lines.</p></div></article>
-        <article class="like-card"><img src="assets/interests/table-tennis.svg" alt="Illustration of table tennis paddles and a ball"><div><h3>Table tennis</h3><p>Fast feedback and small adjustments.</p></div></article>
-        <article class="like-card"><img src="assets/interests/padel.svg" alt="Illustration of a padel racket and ball"><div><h3>Padel</h3><p>Simple to begin, hard to master.</p></div></article>
       </div>
     </section>
 
@@ -264,6 +254,10 @@
             <span><i aria-hidden="true">01</i> Initial review</span>
             <span><i aria-hidden="true">02</i> Suggested KPIs</span>
             <span><i aria-hidden="true">03</i> Clear scope and price</span>
+          </div>
+          <div class="contact-actions">
+            <a class="button button-secondary" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=blaisenewman%40gmail.com&amp;su=PestoAi%20enquiry" target="_blank" rel="noopener">Email us</a>
+            <button class="text-button" id="copyEmail" type="button">Copy email address</button>
           </div>
         </div>
 
@@ -279,18 +273,24 @@
           <button class="button button-primary form-submit" type="submit">Send for review <span aria-hidden="true">→</span></button>
           <p class="form-note">Private repository? Send the link first. We will arrange secure access separately.</p>
           <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+          <div class="form-fallback" id="formFallback" hidden>
+            <a class="button button-secondary" id="openGmailFallback" target="_blank" rel="noopener">Open in Gmail</a>
+            <button class="text-button" id="copySubmission" type="button">Copy message details</button>
+          </div>
         </form>
       </div>
     </section>
 
-    <section class="join-section shell" id="join">
-      <div class="join-card">
-        <div>
-          <p class="eyebrow">Join us</p>
-          <h2>Think you could help?</h2>
-          <p>We are interested in motivated people who can help us make AI more useful, measurable and properly adapted to the people using it. Technical, commercial, design and operational perspectives are all welcome.</p>
-        </div>
-        <a class="button button-light" href="mailto:blaisenewman@gmail.com?subject=PestoAi%20application&body=Hi%20PestoAi%2C%0A%0AI%27d%20like%20to%20help%20with%20your%20mission.%0A%0AHere%27s%20a%20little%20about%20me%3A%0A">Apply to join <span aria-hidden="true">↗</span></a>
+    <section class="compact-about" aria-label="About PestoAi">
+      <div class="shell compact-about-inner">
+        <article>
+          <p class="mini-label mono">THE TEAM</p>
+          <p><strong>Blaise N.</strong>, Founder &amp; CEO, studies computer engineering. <strong>Luke N.</strong>, Technical &amp; Strategic Adviser, is a computer engineering graduate with more than three years of industry experience.</p>
+        </article>
+        <article>
+          <p class="mini-label mono">WHY PESTO?</p>
+          <p>Pesto is simple to make, but difficult to make properly. We see AI in the same way: easy to add, much harder to make genuinely useful.</p>
+        </article>
       </div>
     </section>
   </main>
@@ -299,7 +299,7 @@
     <div class="shell footer-inner">
       <a class="brand" href="#top" aria-label="PestoAi home"><span class="brand-mark" aria-hidden="true">P</span><span>PestoAi</span></a>
       <p>Simple AI, measured properly and adapted to your needs.</p>
-      <div class="footer-meta"><a href="mailto:blaisenewman@gmail.com">blaisenewman@gmail.com</a><span class="mono">© <span id="year"></span></span></div>
+      <div class="footer-meta"><a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=blaisenewman%40gmail.com&amp;su=PestoAi%20enquiry" target="_blank" rel="noopener">blaisenewman@gmail.com</a><span class="mono">© <span id="year"></span></span></div>
     </div>
   </footer>
 

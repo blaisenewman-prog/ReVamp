@@ -392,37 +392,157 @@
     }
   });
 
-  // Review form: PHP on normal hosting, email fallback on static hosting/local files.
+  async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (_) {
+      const field = document.createElement('textarea');
+      field.value = text;
+      field.setAttribute('readonly', '');
+      field.style.position = 'fixed';
+      field.style.opacity = '0';
+      document.body.appendChild(field);
+      field.select();
+      const copied = document.execCommand('copy');
+      field.remove();
+      return copied;
+    }
+  }
+
+  function gmailComposeUrl(subject, body) {
+    const params = new URLSearchParams({ view: 'cm', fs: '1', to: CONTACT_EMAIL, su: subject, body });
+    return `https://mail.google.com/mail/?${params.toString()}`;
+  }
+
+  // One-page redesign generator. The OpenAI key stays in the PHP backend.
+  const generatorForm = document.querySelector('#siteGeneratorForm');
+  const generatorStatus = document.querySelector('#generatorStatus');
+  const generatorSubmit = generatorForm.querySelector('button[type="submit"]');
+  const generatorEmpty = document.querySelector('#generatorEmpty');
+  const generatorPreview = document.querySelector('#generatorPreview');
+  const generatedFrame = document.querySelector('#generatedSiteFrame');
+  const generatedCode = document.querySelector('#generatedCode');
+  const generatedCodeContent = generatedCode.querySelector('code');
+  const generatedName = document.querySelector('#generatedFileName');
+  const generatorUsage = document.querySelector('#generatorUsage');
+  const viewGeneratedHtml = document.querySelector('#viewGeneratedHtml');
+  const downloadGeneratedHtml = document.querySelector('#downloadGeneratedHtml');
+  let latestGeneratedHtml = '';
+  let latestGeneratedHost = 'site';
+
+  generatorForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (!generatorForm.reportValidity()) return;
+    const data = new FormData(generatorForm);
+    if (data.get('company_website')) return;
+
+    generatorSubmit.disabled = true;
+    generatorSubmit.textContent = 'Reading and redesigning…';
+    generatorStatus.textContent = 'Reading the public page and preparing one standalone index.html.';
+    generatorStatus.className = 'generator-status';
+    generatorPreview.hidden = true;
+    generatorEmpty.hidden = false;
+
+    try {
+      const response = await fetch(generatorForm.action, {
+        method: 'POST',
+        body: data,
+        headers: { Accept: 'application/json' }
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.success || !result.html) {
+        throw new Error(result.message || 'The redesign could not be generated.');
+      }
+
+      latestGeneratedHtml = result.html;
+      latestGeneratedHost = result.host || 'site';
+      generatedName.textContent = `${latestGeneratedHost}/index.html`;
+      generatedFrame.srcdoc = latestGeneratedHtml;
+      generatedCodeContent.textContent = latestGeneratedHtml;
+      generatedCode.hidden = true;
+      generatedFrame.hidden = false;
+      viewGeneratedHtml.textContent = 'View HTML';
+      generatorUsage.textContent = result.usage
+        ? `${result.usage.output_tokens || 0} output tokens · ${result.model || 'OpenAI model'} · 6,000 token cap`
+        : `Generated with ${result.model || 'OpenAI'} · 6,000 token cap`;
+      generatorEmpty.hidden = true;
+      generatorPreview.hidden = false;
+      generatorStatus.textContent = 'Redesign ready. Review the preview or download index.html.';
+      generatorStatus.className = 'generator-status success';
+      showToast('Website redesign generated');
+    } catch (error) {
+      generatorStatus.textContent = error.message;
+      generatorStatus.className = 'generator-status error';
+    } finally {
+      generatorSubmit.disabled = false;
+      generatorSubmit.innerHTML = 'Generate redesign <span aria-hidden="true">✦</span>';
+    }
+  });
+
+  viewGeneratedHtml.addEventListener('click', () => {
+    const showingCode = !generatedCode.hidden;
+    generatedCode.hidden = showingCode;
+    generatedFrame.hidden = !showingCode;
+    viewGeneratedHtml.textContent = showingCode ? 'View HTML' : 'View preview';
+  });
+
+  downloadGeneratedHtml.addEventListener('click', () => {
+    if (!latestGeneratedHtml) return;
+    const blob = new Blob([latestGeneratedHtml], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'index.html';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  // Review form: send through the PHP backend and provide a reliable Gmail/copy fallback.
   const form = document.querySelector('#reviewForm');
   const formStatus = document.querySelector('#formStatus');
   const submitButton = form.querySelector('button[type="submit"]');
+  const formFallback = document.querySelector('#formFallback');
+  const openGmailFallback = document.querySelector('#openGmailFallback');
+  const copySubmission = document.querySelector('#copySubmission');
+  let latestSubmissionText = '';
 
-  function mailtoFallback(data) {
-    const subject = encodeURIComponent(`PestoAi review request — ${data.get('company') || data.get('name')}`);
-    const body = encodeURIComponent([
+  function buildSubmission(data) {
+    const company = data.get('company') || 'Not provided';
+    const subject = `PestoAi review request — ${data.get('company') || data.get('name')}`;
+    const body = [
       `Name: ${data.get('name')}`,
       `Email: ${data.get('email')}`,
-      `Company: ${data.get('company') || 'Not provided'}`,
+      `Company: ${company}`,
       `Website / repository: ${data.get('project_url')}`,
       '',
       'Problem to review:',
       data.get('problem')
-    ].join('\n'));
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+    ].join('\n');
+    return { subject, body };
   }
+
+  document.querySelector('#copyEmail').addEventListener('click', async () => {
+    const copied = await copyText(CONTACT_EMAIL);
+    showToast(copied ? 'Email address copied' : CONTACT_EMAIL);
+  });
+
+  copySubmission.addEventListener('click', async () => {
+    const copied = await copyText(latestSubmissionText);
+    showToast(copied ? 'Message details copied' : 'Copy was unavailable');
+  });
 
   form.addEventListener('submit', async event => {
     event.preventDefault();
     if (!form.reportValidity()) return;
     const data = new FormData(form);
     if (data.get('website')) return;
-
-    if (location.protocol === 'file:' || location.hostname.endsWith('github.io')) {
-      formStatus.textContent = 'Opening your email app with the review details…';
-      formStatus.className = 'form-status';
-      mailtoFallback(data);
-      return;
-    }
+    const submission = buildSubmission(data);
+    latestSubmissionText = `${submission.subject}\n\n${submission.body}`;
+    openGmailFallback.href = gmailComposeUrl(submission.subject, submission.body);
+    formFallback.hidden = true;
 
     submitButton.disabled = true;
     submitButton.textContent = 'Sending…';
@@ -430,7 +550,11 @@
     formStatus.className = 'form-status';
 
     try {
-      const response = await fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: data,
+        headers: { Accept: 'application/json' }
+      });
       const result = await response.json().catch(() => ({}));
       if (!response.ok || !result.success) throw new Error(result.message || 'The form could not be sent.');
       form.reset();
@@ -438,9 +562,9 @@
       formStatus.className = 'form-status success';
       showToast('Review request sent');
     } catch (error) {
-      formStatus.textContent = 'The server form is unavailable here. Opening your email app instead…';
+      formStatus.textContent = `${error.message} You can still open the prepared message in Gmail or copy it below.`;
       formStatus.className = 'form-status error';
-      mailtoFallback(data);
+      formFallback.hidden = false;
     } finally {
       submitButton.disabled = false;
       submitButton.innerHTML = 'Send for review <span aria-hidden="true">→</span>';
