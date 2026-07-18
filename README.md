@@ -1,33 +1,23 @@
-# Aiify startup website
+# Aiify website
 
-A static, responsive landing page with three interactive product demos:
+This version is deliberately self-contained: all HTML, styling and JavaScript are inside `index.html`.
 
-1. Website refresh
-2. Database query optimization
-3. Checkout cleanup
+## Publish on GitHub Pages
 
-## Files
-
-- `index.html` — page structure
-- `styles.css` — design and responsive layouts
-- `script.js` — demo scenarios and interactions
-
-## Run locally
-
-Open `index.html` directly, or run a small local server:
-
-```bash
-python -m http.server 8000
-```
-
-Then visit `http://localhost:8000`.
-
-## Deploy on GitHub Pages
-
-1. Upload all four files to the root of your repository.
+1. Upload `index.html` to the root of your repository.
 2. Open **Settings → Pages**.
-3. Choose **Deploy from a branch**.
-4. Select `main` and `/ (root)`.
+3. Select **Deploy from a branch**.
+4. Choose the `main` branch and `/ (root)` folder.
 5. Save.
 
-No framework, build step or backend is required.
+No build command, framework, package installation or support files are required.
+
+## Demo flow
+
+Each of the three examples supports:
+
+1. Select scenario.
+2. Click **Run Aiify**.
+3. Review findings.
+4. Click **Apply improvements**.
+5. Toggle between before and after or view the generated change list.
