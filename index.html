@@ -1,487 +1,386 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ReVamp — AI that reads your backend and tells you what to fix</title>
-<meta name="description" content="We connect AI to your existing backend, then hand your team a short, ranked list of real improvements — ready to ship.">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0d12">
+  <meta name="description" content="ReVamp connects AI to your existing systems, finds the highest-impact improvements and prepares the fix for review.">
+  <title>ReVamp — Find what to fix. Ship the upgrade.</title>
 
-<!-- ============================================================
-  DESIGN TOKENS
-  Palette: cool paper background, ink text, one signal-blue accent
-  for AI/interactive elements, muted green for "suggested" code,
-  muted rust for "before" code. Kept deliberately restrained.
-  Type: Space Grotesk (display) + Inter (body) + IBM Plex Mono
-  (for the live-read code panel — the page's signature element).
-  ============================================================ -->
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-<style>
-  :root {
-    --paper: #EEF0F2;
-    --paper-raised: #FFFFFF;
-    --ink: #14171C;
-    --graphite: #5B616B;
-    --line: #D9DCE1;
-    --signal: #2F5DFF;
-    --signal-dim: #E8EDFF;
-    --good: #1F8A5F;
-    --good-dim: #E6F3ED;
-    --before: #B8542A;
-    --before-dim: #F7EBE4;
-
-    --display: 'Space Grotesk', system-ui, sans-serif;
-    --body: 'Inter', system-ui, sans-serif;
-    --mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
-
-    --max-w: 1080px;
-  }
-
-  * { box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    * { animation: none !important; transition: none !important; }
-  }
-
-  body {
-    margin: 0;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--body);
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  a { color: inherit; }
-
-  .wrap {
-    max-width: var(--max-w);
-    margin: 0 auto;
-    padding: 0 28px;
-  }
-
-  /* ---------- header ---------- */
-
-  header.site {
-    padding: 28px 0 0;
-  }
-
-  .header-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
-
-  .mark {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: var(--display);
-    font-weight: 600;
-    font-size: 18px;
-    letter-spacing: -0.01em;
-    text-decoration: none;
-    color: var(--ink);
-  }
-
-  .mark-glyph {
-    width: 22px;
-    height: 22px;
-    flex: none;
-    border-radius: 5px;
-    background: var(--ink);
-    position: relative;
-  }
-  .mark-glyph::before {
-    content: "";
-    position: absolute;
-    inset: 6px;
-    border-radius: 2px;
-    background: var(--signal);
-  }
-
-  .header-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--body);
-    font-weight: 600;
-    font-size: 14px;
-    padding: 10px 16px;
-    border-radius: 8px;
-    border: 1px solid var(--line);
-    background: var(--paper-raised);
-    text-decoration: none;
-    color: var(--ink);
-    transition: border-color 0.15s ease, transform 0.15s ease;
-    white-space: nowrap;
-  }
-  .header-cta:hover { border-color: var(--ink); }
-  .header-cta:focus-visible {
-    outline: 2px solid var(--signal);
-    outline-offset: 2px;
-  }
-
-  /* ---------- hero ---------- */
-
-  .hero {
-    padding: 96px 0 72px;
-  }
-
-  .eyebrow {
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--signal);
-    margin: 0 0 18px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .eyebrow::before {
-    content: "";
-    width: 20px;
-    height: 1px;
-    background: var(--signal);
-  }
-
-  h1 {
-    font-family: var(--display);
-    font-weight: 600;
-    font-size: clamp(34px, 5.4vw, 56px);
-    line-height: 1.08;
-    letter-spacing: -0.02em;
-    margin: 0 0 24px;
-    max-width: 16ch;
-  }
-
-  h1 .accent { color: var(--signal); }
-
-  .lede {
-    font-size: 18px;
-    color: var(--graphite);
-    max-width: 54ch;
-    margin: 0 0 40px;
-  }
-
-  .cta-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-  }
-
-  .btn {
-    font-family: var(--body);
-    font-weight: 600;
-    font-size: 15px;
-    padding: 14px 24px;
-    border-radius: 9px;
-    text-decoration: none;
-    cursor: pointer;
-    border: 1px solid transparent;
-    transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .btn:focus-visible {
-    outline: 2px solid var(--signal);
-    outline-offset: 2px;
-  }
-
-  .btn-primary {
-    background: var(--ink);
-    color: var(--paper-raised);
-  }
-  .btn-primary:hover { transform: translateY(-1px); }
-
-  .btn-secondary {
-    background: transparent;
-    color: var(--ink);
-    border-color: var(--line);
-  }
-  .btn-secondary:hover { border-color: var(--ink); }
-
-  /* ---------- demo / signature panel ---------- */
-
-  .demo-section {
-    padding: 8px 0 88px;
-  }
-
-  .panel-label {
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--graphite);
-    margin: 0 0 14px;
-  }
-
-  .panel {
-    background: var(--ink);
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 20px 50px -20px rgba(20, 23, 28, 0.35);
-  }
-
-  .panel-topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
-
-  .panel-route {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: #C7CCD6;
-  }
-
-  .panel-status {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--good);
-    background: rgba(31, 138, 95, 0.15);
-    padding: 4px 10px;
-    border-radius: 100px;
-    letter-spacing: 0.04em;
-  }
-
-  .code {
-    font-family: var(--mono);
-    font-size: 14px;
-    line-height: 1.9;
-    padding: 24px 20px 28px;
-    overflow-x: auto;
-    color: #C7CCD6;
-  }
-
-  .code .indent { padding-left: 2ch; }
-  .code .indent2 { padding-left: 4ch; }
-  .code .kw { color: #7FA3FF; }
-  .code .fn { color: #E8C97A; }
-  .code .str { color: #9AD1B0; }
-
-  .line-before {
-    display: block;
-    color: var(--before);
-    text-decoration: line-through;
-    text-decoration-color: rgba(184, 84, 42, 0.55);
-    opacity: 0.75;
-  }
-
-  .line-after {
-    display: block;
-    color: var(--good);
-    position: relative;
-    padding-left: 1.2ch;
-  }
-  .line-after::before {
-    content: "+";
-    position: absolute;
-    left: -0.6ch;
-  }
-
-  .annotation {
-    margin-top: 18px;
-    background: rgba(47, 93, 255, 0.12);
-    border: 1px solid rgba(47, 93, 255, 0.35);
-    border-radius: 10px;
-    padding: 14px 16px;
-    font-family: var(--body);
-    font-size: 13.5px;
-    line-height: 1.55;
-    color: #DCE3F7;
-    max-width: 62ch;
-  }
-  .annotation strong {
-    color: #FFFFFF;
-    font-weight: 600;
-  }
-
-  /* ---------- value props ---------- */
-
-  .props {
-    padding: 0 0 96px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 28px;
-  }
-
-  .prop h3 {
-    font-family: var(--display);
-    font-size: 17px;
-    font-weight: 600;
-    margin: 0 0 8px;
-    letter-spacing: -0.01em;
-  }
-
-  .prop p {
-    font-size: 14.5px;
-    color: var(--graphite);
-    margin: 0;
-    max-width: 32ch;
-  }
-
-  .prop-rule {
-    width: 28px;
-    height: 3px;
-    background: var(--signal);
-    border-radius: 2px;
-    margin-bottom: 16px;
-  }
-
-  /* ---------- footer ---------- */
-
-  footer.site {
-    border-top: 1px solid var(--line);
-    padding: 32px 0 40px;
-  }
-
-  .footer-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-
-  .footer-note {
-    font-size: 14px;
-    color: var(--graphite);
-  }
-
-  .footer-note a {
-    color: var(--ink);
-    font-weight: 600;
-    text-decoration: underline;
-    text-decoration-color: var(--line);
-    text-underline-offset: 3px;
-  }
-  .footer-note a:hover { text-decoration-color: var(--ink); }
-
-  /* ---------- reveal-on-load motion (subtle, one orchestrated pass) ---------- */
-
-  .reveal {
-    opacity: 0;
-    transform: translateY(10px);
-    animation: rise 0.6s ease forwards;
-  }
-  .reveal.d1 { animation-delay: 0.05s; }
-  .reveal.d2 { animation-delay: 0.15s; }
-  .reveal.d3 { animation-delay: 0.28s; }
-  .reveal.d4 { animation-delay: 0.42s; }
-
-  @keyframes rise {
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ---------- responsive ---------- */
-
-  @media (max-width: 780px) {
-    .props { grid-template-columns: 1fr; gap: 32px; }
-    .hero { padding: 64px 0 56px; }
-    .demo-section { padding-bottom: 64px; }
-  }
-
-  @media (max-width: 480px) {
-    .wrap { padding: 0 20px; }
-    .header-cta span.long { display: none; }
-    .code { font-size: 12.5px; }
-  }
-</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
 </head>
 <body>
+  <div class="noise" aria-hidden="true"></div>
 
-<header class="site">
-  <div class="wrap header-row">
-    <a class="mark" href="#top" aria-label="ReVamp home">
-      <span class="mark-glyph" aria-hidden="true"></span>
-      ReVamp
-    </a>
-    <a class="header-cta" href="mailto:blaisenewman@gmail.com?subject=Tell%20me%20more">
-      <span class="long">Email us</span><span aria-hidden="true">→</span>
-    </a>
-  </div>
-</header>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="#top" aria-label="ReVamp home">
+        <span class="brand-mark" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </span>
+        <span>ReVamp</span>
+      </a>
 
-<main id="top">
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="#product">Product</a>
+        <a href="#demo">Live demo</a>
+        <a href="#process">How it works</a>
+      </nav>
 
-  <section class="hero wrap">
-    <p class="eyebrow reveal d1">AI wired into what you already run</p>
-    <h1 class="reveal d2">We connect AI to your existing backend, then tell you <span class="accent">what to fix.</span></h1>
-    <p class="lede reveal d3">
-      No migration, no new platform, nothing to install and babysit. Our AI reads your live systems
-      the way a senior engineer would, then hands your team a short, ranked list of real
-      improvements — with the fix already written.
-    </p>
-    <div class="cta-row reveal d4">
-      <a class="btn btn-primary" href="#demo">See how it works</a>
-      <a class="btn btn-secondary" href="mailto:blaisenewman@gmail.com?subject=Tell%20me%20more">For more info, email us</a>
+      <a class="button button-small button-ghost" href="mailto:blaisenewman@gmail.com?subject=ReVamp%20demo">
+        Book a demo <span aria-hidden="true">↗</span>
+      </a>
     </div>
-  </section>
+  </header>
 
-  <section class="demo-section wrap" id="demo">
-    <p class="panel-label">A live read of your backend</p>
-    <div class="panel reveal">
-      <div class="panel-topbar">
-        <span class="panel-route">GET /api/orders/:id/items</span>
-        <span class="panel-status">3 issues found</span>
+  <main id="top">
+    <section class="hero shell">
+      <div class="hero-copy">
+        <div class="system-pill reveal">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span>ReVamp engine online</span>
+          <span class="mono muted">v0.9.4</span>
+        </div>
+
+        <p class="eyebrow reveal reveal-delay-1">AI engineering intelligence</p>
+        <h1 class="reveal reveal-delay-2">Find what is slowing you down. <span>Ship the fix.</span></h1>
+        <p class="hero-text reveal reveal-delay-3">
+          ReVamp reads the systems you already run, ranks the improvements that matter and prepares production-ready changes for your team to review.
+        </p>
+
+        <div class="hero-actions reveal reveal-delay-4">
+          <a class="button button-primary" href="#demo">
+            Run the interactive demo
+            <span aria-hidden="true">↓</span>
+          </a>
+          <a class="button button-secondary" href="mailto:blaisenewman@gmail.com?subject=Tell%20me%20more%20about%20ReVamp">
+            Talk to us
+          </a>
+        </div>
+
+        <div class="trust-row reveal reveal-delay-4" aria-label="Product qualities">
+          <span><i aria-hidden="true"></i>No migration</span>
+          <span><i aria-hidden="true"></i>Human approval</span>
+          <span><i aria-hidden="true"></i>Ready-to-review changes</span>
+        </div>
       </div>
-      <pre class="code"><span class="kw">def</span> <span class="fn">get_order_items</span>(order_id):
-    order = Order.objects.get(id=order_id)
-    items = []
-<span class="line-before indent">    for item_id in order.item_ids:</span>
-<span class="line-before indent2">        items.append(Item.objects.get(id=item_id))</span>
-<span class="line-after indent">items = Item.objects.filter(id__in=order.item_ids)</span>
-    <span class="kw">return</span> items</pre>
-      <div class="annotation">
-        <strong>N+1 query —</strong> this loop issues one database call per item, roughly 40 per
-        request under current order sizes. The suggested change fetches every item in a single
-        query. Ready to review in your next pull request.
+
+      <div class="hero-console reveal reveal-delay-3" aria-label="ReVamp analysis preview">
+        <div class="console-bar">
+          <div class="traffic-lights" aria-hidden="true"><span></span><span></span><span></span></div>
+          <span class="mono">revamp://analysis/production</span>
+          <span class="console-secure mono">secure</span>
+        </div>
+        <div class="console-body mono">
+          <div class="console-line"><span class="line-number">01</span><span class="prompt">$</span> revamp inspect ./production</div>
+          <div class="console-line dim"><span class="line-number">02</span><span>Indexing routes, traces and components…</span></div>
+          <div class="console-line"><span class="line-number">03</span><span class="success">✓</span> 247 endpoints mapped</div>
+          <div class="console-line"><span class="line-number">04</span><span class="success">✓</span> 18 high-impact changes found</div>
+          <div class="finding-card">
+            <div class="finding-top">
+              <span class="severity">HIGH IMPACT</span>
+              <span class="mono muted">API-017</span>
+            </div>
+            <strong>Repeated database queries</strong>
+            <p>Replace per-item lookups with a single batch query.</p>
+            <div class="metric-delta">
+              <span>p95 latency</span>
+              <del>842 ms</del>
+              <span aria-hidden="true">→</span>
+              <ins>118 ms</ins>
+            </div>
+          </div>
+          <div class="cursor-line"><span class="line-number">05</span><span class="prompt">$</span><span class="cursor" aria-hidden="true"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="signal-strip" aria-label="ReVamp capabilities">
+      <div class="signal-track mono">
+        <span>FRONTEND QUALITY</span><b>+</b><span>BACKEND PERFORMANCE</span><b>+</b><span>ACCESSIBILITY</span><b>+</b><span>SECURITY</span><b>+</b><span>CONVERSION</span><b>+</b><span>DEVELOPER EXPERIENCE</span>
+      </div>
+    </section>
+
+    <section class="section shell" id="product">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">One intelligent review layer</p>
+          <h2>Senior-level signal, without another dashboard to babysit.</h2>
+        </div>
+        <p>ReVamp turns noisy technical data into a concise sequence of decisions: what is wrong, why it matters and what to change.</p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature-card feature-card-large">
+          <div class="feature-index mono">01 / CONNECT</div>
+          <div class="feature-visual topology" aria-hidden="true">
+            <span class="node node-core">AI</span>
+            <span class="node node-a">API</span>
+            <span class="node node-b">DB</span>
+            <span class="node node-c">WEB</span>
+            <span class="node node-d">LOGS</span>
+            <i class="link link-a"></i><i class="link link-b"></i><i class="link link-c"></i><i class="link link-d"></i>
+          </div>
+          <h3>Reads what already exists</h3>
+          <p>Connect your code, runtime data and product surface. ReVamp builds context without forcing a migration or a platform rewrite.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-index mono">02 / PRIORITISE</div>
+          <div class="rank-list" aria-hidden="true">
+            <div><span>01</span><i style="--score: 92%"></i><b>92</b></div>
+            <div><span>02</span><i style="--score: 78%"></i><b>78</b></div>
+            <div><span>03</span><i style="--score: 64%"></i><b>64</b></div>
+          </div>
+          <h3>Ranks by real impact</h3>
+          <p>Issues are scored by performance, user experience, effort and risk—not dumped into an endless alert queue.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-index mono">03 / SHIP</div>
+          <div class="diff-window mono" aria-hidden="true">
+            <span class="diff-remove">− for item in order.items:</span>
+            <span class="diff-remove">− &nbsp;&nbsp;fetch(item.id)</span>
+            <span class="diff-add">+ fetch_many(order.ids)</span>
+          </div>
+          <h3>Prepares the change</h3>
+          <p>Each recommendation includes an implementation path and a reviewable patch your engineers remain in control of.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="demo-section" id="demo">
+      <div class="shell">
+        <div class="section-heading demo-heading">
+          <div>
+            <p class="eyebrow">Interactive product demo</p>
+            <h2>Watch ReVamp rescue a website.</h2>
+          </div>
+          <p>This simulation runs entirely in your browser. No data is uploaded and no backend is required.</p>
+        </div>
+
+        <div class="demo-workbench" id="demoWorkbench">
+          <div class="workbench-toolbar">
+            <div class="workbench-title">
+              <span class="workbench-icon mono">&lt;/&gt;</span>
+              <div>
+                <strong>Northstar Coffee</strong>
+                <span class="mono" id="projectStatus">unscanned frontend</span>
+              </div>
+            </div>
+
+            <div class="toolbar-actions">
+              <span class="score-chip mono" id="scoreChip">UX score: 34</span>
+              <button class="button button-primary run-button" id="runRevamp" type="button">
+                <span class="button-spark" aria-hidden="true">✦</span>
+                Run ReVamp
+              </button>
+              <button class="icon-button" id="resetDemo" type="button" aria-label="Reset demo" title="Reset demo">↺</button>
+            </div>
+          </div>
+
+          <div class="demo-grid">
+            <div class="preview-column">
+              <div class="browser-chrome">
+                <div class="browser-top">
+                  <div class="traffic-lights" aria-hidden="true"><span></span><span></span><span></span></div>
+                  <div class="address-bar mono"><span aria-hidden="true">⌕</span> northstar-coffee.example</div>
+                  <span class="browser-menu">•••</span>
+                </div>
+
+                <div class="site-preview" id="sitePreview">
+                  <div class="legacy-site demo-site before-site" id="beforeSite">
+                    <div class="legacy-head">
+                      <div class="legacy-logo">NORTHSTAR COFFEE!!!</div>
+                      <div class="legacy-links"><a href="#">HOME</a> | <a href="#">MENU</a> | <a href="#">ABOUT US</a> | <a href="#">CONTACT</a></div>
+                    </div>
+                    <div class="legacy-marquee">★★★★★ WELCOME TO THE BEST COFFEE IN TOWN! NOW SERVING BREAKFAST ALL DAY! ★★★★★</div>
+                    <div class="legacy-body">
+                      <h3>FRESH COFFEE &amp; GOOD TIMES :)</h3>
+                      <p>Welcome to our website. We have coffee, cakes and sandwiches. Please come visit us today!!!</p>
+                      <button type="button">CLICK HERE FOR MENU</button>
+                      <div class="legacy-columns">
+                        <div><strong>OPENING HOURS</strong><br>Mon-Fri 7-6<br>Sat-Sun 8-5</div>
+                        <div><strong>FIND US</strong><br>14 Market Lane<br>Dublin</div>
+                        <div><strong>CALL NOW</strong><br>01 555 0198<br>THANK YOU</div>
+                      </div>
+                    </div>
+                    <div class="legacy-footer">Copyright 2013 Northstar Coffee - Best viewed on desktop</div>
+                  </div>
+
+                  <div class="modern-site demo-site after-site" id="afterSite" aria-hidden="true">
+                    <header class="modern-nav">
+                      <div class="modern-logo"><span aria-hidden="true">✦</span> Northstar</div>
+                      <nav aria-label="Demo site navigation"><span>Menu</span><span>Our story</span><span>Visit</span></nav>
+                      <span class="modern-order">Order ahead</span>
+                    </header>
+                    <div class="modern-hero">
+                      <div class="modern-copy">
+                        <span class="modern-kicker">Independent coffee · Dublin</span>
+                        <h3>Your morning, made better.</h3>
+                        <p>Thoughtful coffee, warm pastries and a quiet corner in the middle of the city.</p>
+                        <div class="modern-actions"><span>Explore the menu</span><span>Find our café ↗</span></div>
+                        <div class="modern-proof"><b>4.9</b><span>★★★★★<br><small>from 600+ neighbours</small></span></div>
+                      </div>
+                      <div class="coffee-visual" aria-hidden="true">
+                        <div class="sun-disc"></div>
+                        <div class="coffee-shadow"></div>
+                        <div class="coffee-cup"><span></span></div>
+                        <div class="coffee-steam steam-one"></div>
+                        <div class="coffee-steam steam-two"></div>
+                        <div class="bean bean-one"></div>
+                        <div class="bean bean-two"></div>
+                        <div class="bean bean-three"></div>
+                      </div>
+                    </div>
+                    <div class="modern-footer"><span>Open daily from 07:00</span><span>14 Market Lane, Dublin 2</span><span>Seasonal menu →</span></div>
+                  </div>
+
+                  <div class="scan-overlay" id="scanOverlay" aria-hidden="true">
+                    <div class="scan-line"></div>
+                    <div class="scan-copy mono">
+                      <span id="scanLabel">Mapping interface…</span>
+                      <b id="scanPercent">0%</b>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <aside class="analysis-column" aria-live="polite" aria-atomic="true">
+              <div class="analysis-empty" id="analysisEmpty">
+                <div class="radar" aria-hidden="true"><span></span><i></i></div>
+                <p class="mono">Awaiting analysis</p>
+                <h3>Run ReVamp to inspect this interface.</h3>
+                <p>The engine will review hierarchy, accessibility, responsiveness, conversion and visual consistency.</p>
+              </div>
+
+              <div class="analysis-running" id="analysisRunning" hidden>
+                <p class="mono analysis-label"><span class="live-dot"></span> ANALYSIS IN PROGRESS</p>
+                <h3 id="runningTitle">Reading visual hierarchy</h3>
+                <div class="progress-track"><span id="analysisProgress"></span></div>
+                <ul class="scan-log mono" id="scanLog">
+                  <li data-step="0"><span>○</span> Parse DOM structure</li>
+                  <li data-step="1"><span>○</span> Audit responsive layout</li>
+                  <li data-step="2"><span>○</span> Check accessibility signals</li>
+                  <li data-step="3"><span>○</span> Model conversion path</li>
+                </ul>
+              </div>
+
+              <div class="analysis-results" id="analysisResults" hidden>
+                <div class="results-head">
+                  <div>
+                    <p class="mono analysis-label">REVAMP REPORT / 4 FINDINGS</p>
+                    <h3>Recommended upgrade plan</h3>
+                  </div>
+                  <span class="impact-badge">High impact</span>
+                </div>
+
+                <div class="suggestion-list">
+                  <div class="suggestion"><span class="suggestion-number mono">01</span><div><strong>Rebuild the visual hierarchy</strong><p>Create one clear value proposition and primary action.</p></div><span class="suggestion-score mono">+24</span></div>
+                  <div class="suggestion"><span class="suggestion-number mono">02</span><div><strong>Introduce a responsive grid</strong><p>Replace fixed desktop blocks with fluid mobile-safe layouts.</p></div><span class="suggestion-score mono">+18</span></div>
+                  <div class="suggestion"><span class="suggestion-number mono">03</span><div><strong>Correct accessibility issues</strong><p>Improve contrast, touch targets, semantics and focus states.</p></div><span class="suggestion-score mono">+13</span></div>
+                  <div class="suggestion"><span class="suggestion-number mono">04</span><div><strong>Strengthen conversion cues</strong><p>Use focused copy, social proof and a prominent next step.</p></div><span class="suggestion-score mono">+9</span></div>
+                </div>
+
+                <button class="button button-primary apply-button" id="applyRevamp" type="button">
+                  Apply 4 improvements <span aria-hidden="true">→</span>
+                </button>
+              </div>
+
+              <div class="analysis-complete" id="analysisComplete" hidden>
+                <div class="complete-icon" aria-hidden="true">✓</div>
+                <p class="mono analysis-label">REVAMP COMPLETE</p>
+                <h3>A clearer, faster and more credible experience.</h3>
+                <p>The prototype now has a responsive layout, accessible contrast, focused calls to action and a stronger content hierarchy.</p>
+                <div class="metric-grid">
+                  <div><span>UX score</span><strong><del>34</del> 92</strong></div>
+                  <div><span>Accessibility</span><strong><del>51</del> 96</strong></div>
+                  <div><span>Mobile ready</span><strong><del>No</del> Yes</strong></div>
+                  <div><span>Primary actions</span><strong><del>5</del> 1</strong></div>
+                </div>
+                <button class="button button-secondary" id="viewChanges" type="button">View change log</button>
+              </div>
+            </aside>
+          </div>
+
+          <div class="changelog mono" id="changeLog" hidden>
+            <div class="changelog-head"><span>revamp.patch</span><button id="closeChangeLog" type="button" aria-label="Close change log">×</button></div>
+            <div><span class="diff-file">@@ frontend/homepage @@</span></div>
+            <div class="diff-remove">- fixed-width table layout</div>
+            <div class="diff-add">+ responsive semantic grid</div>
+            <div class="diff-remove">- 5 competing calls to action</div>
+            <div class="diff-add">+ 1 primary conversion path</div>
+            <div class="diff-remove">- low contrast decorative text</div>
+            <div class="diff-add">+ WCAG-conscious colour system</div>
+            <div class="diff-add">+ social proof, local context and mobile navigation</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell" id="process">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">How it works</p>
+          <h2>From signal to shipped change.</h2>
+        </div>
+        <p>ReVamp is designed to augment your engineering team, not replace its judgement.</p>
+      </div>
+
+      <ol class="process-list">
+        <li>
+          <span class="process-number mono">01</span>
+          <div><h3>Connect</h3><p>Give ReVamp scoped access to the code and operational context you choose.</p></div>
+          <span class="process-code mono">read_only: true</span>
+        </li>
+        <li>
+          <span class="process-number mono">02</span>
+          <div><h3>Understand</h3><p>The engine maps dependencies, patterns, user journeys and technical constraints.</p></div>
+          <span class="process-code mono">context: mapped</span>
+        </li>
+        <li>
+          <span class="process-number mono">03</span>
+          <div><h3>Prioritise</h3><p>Recommendations are ranked by impact, confidence, effort and implementation risk.</p></div>
+          <span class="process-code mono">noise: filtered</span>
+        </li>
+        <li>
+          <span class="process-number mono">04</span>
+          <div><h3>Review and ship</h3><p>Your team approves the plan, reviews the change and controls the release.</p></div>
+          <span class="process-code mono">human: in_control</span>
+        </li>
+      </ol>
+    </section>
+
+    <section class="cta-section shell">
+      <div class="cta-card">
+        <div class="cta-grid" aria-hidden="true"></div>
+        <p class="eyebrow">Your systems already contain the answers</p>
+        <h2>Let ReVamp find the next high-impact change.</h2>
+        <p>Connect what you have. Keep your stack. Improve what matters.</p>
+        <a class="button button-light" href="mailto:blaisenewman@gmail.com?subject=ReVamp%20early%20access">Request early access <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <a class="brand footer-brand" href="#top">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <span>ReVamp</span>
+      </a>
+      <p>AI engineering intelligence for the systems you already run.</p>
+      <div class="footer-links">
+        <a href="mailto:blaisenewman@gmail.com">blaisenewman@gmail.com</a>
+        <span>© <span id="year"></span> ReVamp</span>
       </div>
     </div>
-  </section>
+  </footer>
 
-  <section class="props wrap">
-    <div class="prop">
-      <div class="prop-rule" aria-hidden="true"></div>
-      <h3>Reads what's already there</h3>
-      <p>Connects to your backend as it exists today. No rewrites, no new logging or instrumentation to install first.</p>
-    </div>
-    <div class="prop">
-      <div class="prop-rule" aria-hidden="true"></div>
-      <h3>Finds what matters</h3>
-      <p>Surfaces the handful of issues worth a senior engineer's time — not a flood of low-value alerts to sort through.</p>
-    </div>
-    <div class="prop">
-      <div class="prop-rule" aria-hidden="true"></div>
-      <h3>Hands you the fix</h3>
-      <p>Every suggestion comes with the change itself, written and ready for your team to review and ship.</p>
-    </div>
-  </section>
-
-</main>
-
-<footer class="site">
-  <div class="wrap footer-row">
-    <a class="mark" href="#top" aria-label="ReVamp home">
-      <span class="mark-glyph" aria-hidden="true"></span>
-      ReVamp
-    </a>
-    <p class="footer-note">
-      Questions before you connect anything? <a href="mailto:blaisenewman@gmail.com?subject=Tell%20me%20more">blaisenewman@gmail.com</a>
-    </p>
-  </div>
-</footer>
-
+  <div class="toast" id="toast" role="status" aria-live="polite">Demo reset</div>
 </body>
 </html>
