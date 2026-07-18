@@ -1,28 +1,33 @@
-# ReVamp startup site
+# Aiify startup website
 
-A responsive static marketing site with an interactive before-and-after product demo.
+A static, responsive landing page with three interactive product demos:
+
+1. Website refresh
+2. Database query optimization
+3. Checkout cleanup
 
 ## Files
 
-- `index.html` — page structure and content
-- `styles.css` — all styling and responsive layouts
-- `script.js` — interactive ReVamp demo, loading states, reset and change log
+- `index.html` — page structure
+- `styles.css` — design and responsive layouts
+- `script.js` — demo scenarios and interactions
 
-## Publish with GitHub Pages
+## Run locally
 
-1. Create a new GitHub repository.
-2. Upload the three files in this folder to the repository root.
-3. Open **Settings → Pages**.
-4. Under **Build and deployment**, choose **Deploy from a branch**.
-5. Select the `main` branch and `/ (root)`, then save.
+Open `index.html` directly, or run a small local server:
 
-No build command, package manager or backend is required.
+```bash
+python -m http.server 8000
+```
 
-## Customisation
+Then visit `http://localhost:8000`.
 
-- Update the contact email in `index.html` by replacing `blaisenewman@gmail.com`.
-- Change the startup wording directly in `index.html`.
-- Adjust colours in the `:root` section at the top of `styles.css`.
-- The before-and-after demo content is inside `#beforeSite` and `#afterSite` in `index.html`.
+## Deploy on GitHub Pages
 
-The Google Fonts import requires an internet connection. Everything else is self-contained.
+1. Upload all four files to the root of your repository.
+2. Open **Settings → Pages**.
+3. Choose **Deploy from a branch**.
+4. Select `main` and `/ (root)`.
+5. Save.
+
+No framework, build step or backend is required.
