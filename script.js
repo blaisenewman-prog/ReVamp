@@ -452,7 +452,7 @@
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok || !result.success || !result.html) {
-        throw new Error(result.message || 'The redesign could not be generated.');
+        throw new Error(result.message || 'Sorry, this feature is coming soon.');
       }
 
       latestGeneratedHtml = result.html;
