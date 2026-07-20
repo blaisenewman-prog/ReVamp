@@ -10,6 +10,14 @@
   display: none;
 }
 
+#contact .contact-email-address {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+
 #contact .review-form input,
 #contact .review-form textarea,
 #contact .review-form button,
@@ -40,6 +48,11 @@
   #contact .contact-email-actions .text-button,
   #contact .form-submit {
     width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  #contact .contact-email-address {
     justify-content: center;
     text-align: center;
   }

@@ -6,7 +6,7 @@
  * redesign generator require the credentials below. Keep this file private.
  */
 return [
-    'contact_email' => 'blaisenewman@gmail.com',
+    'contact_email' => 'pestoai.net@gmail.com',
 
     // Recommended for reliable contact-form delivery. For Gmail, create an
     // App Password and use smtp.gmail.com, port 587, encryption tls.

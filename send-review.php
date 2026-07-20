@@ -7,7 +7,7 @@ header('X-Content-Type-Options: nosniff');
 
 $configFile = __DIR__ . '/private/config.php';
 $config = is_file($configFile) ? require $configFile : [];
-$contactEmail = (string)($config['contact_email'] ?? 'blaisenewman@gmail.com');
+$contactEmail = (string)($config['contact_email'] ?? 'pestoai.net@gmail.com');
 
 function respond(int $status, bool $success, string $message): never {
     http_response_code($status);

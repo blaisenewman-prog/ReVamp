@@ -1,20 +1,23 @@
 (() => {
   "use strict";
 
-  const EMAIL = "blaisenewman@gmail.com";
+  const EMAIL = "pestoai.net@gmail.com";
   const SUBJECT = "PestoAi website or codebase review";
 
   const form = document.getElementById("reviewForm");
   const status = document.getElementById("formStatus");
   const fallback = document.getElementById("formFallback");
-  const gmailLink = document.getElementById("openGmailFallback");
   const copySubmissionButton = document.getElementById("copySubmission");
   const copyEmailButton = document.getElementById("copyEmail");
+  const toast = document.getElementById("toast");
 
-  if (!form) return;
   if (fallback) fallback.hidden = false;
 
   function getFields() {
+    if (!form) {
+      return { name: "", email: "", projectUrl: "", problem: "" };
+    }
+
     const data = new FormData(form);
     return {
       name: String(data.get("name") || "").trim(),
@@ -41,23 +44,17 @@
     ].join("\n");
   }
 
-  function buildMailto(fields) {
-    return `mailto:${EMAIL}?subject=${encodeURIComponent(SUBJECT)}&body=${encodeURIComponent(buildBody(fields))}`;
-  }
-
   function buildGmail(fields) {
     const params = new URLSearchParams({
       view: "cm",
       fs: "1",
+      tf: "1",
       to: EMAIL,
       su: SUBJECT,
       body: buildBody(fields)
     });
-    return `https://mail.google.com/mail/?${params.toString()}`;
-  }
 
-  function refreshGmailLink() {
-    if (gmailLink) gmailLink.href = buildGmail(getFields());
+    return `https://mail.google.com/mail/?${params.toString()}`;
   }
 
   async function copyText(text) {
@@ -79,38 +76,42 @@
     if (!copied) throw new Error("Copy failed");
   }
 
-  form.addEventListener("input", refreshGmailLink);
-  refreshGmailLink();
+  function showMessage(message) {
+    if (status) status.textContent = message;
 
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-
-    if (!form.reportValidity()) return;
-
-    const fields = getFields();
-    refreshGmailLink();
-
-    if (status) {
-      status.textContent = "Opening your email app. If nothing opens, use ‘Open in Gmail’ or ‘Copy details instead’.";
+    if (toast) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.setTimeout(() => toast.classList.remove("show"), 2200);
     }
+  }
 
-    window.location.href = buildMailto(fields);
-  }, true);
+  if (form) {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      if (!form.reportValidity()) return;
+
+      showMessage("Opening Gmail with your details filled in…");
+
+      // Same-tab navigation is more reliable than a scripted pop-up on mobile.
+      window.location.assign(buildGmail(getFields()));
+    }, true);
+  }
 
   if (copySubmissionButton) {
     copySubmissionButton.addEventListener("click", async (event) => {
       event.preventDefault();
       event.stopImmediatePropagation();
 
-      const fields = getFields();
-      const text = `To: ${EMAIL}\nSubject: ${SUBJECT}\n\n${buildBody(fields)}`;
+      const text = `To: ${EMAIL}\nSubject: ${SUBJECT}\n\n${buildBody(getFields())}`;
 
       try {
         await copyText(text);
-        if (status) status.textContent = "Message details copied. Paste them into any email service.";
+        showMessage("Message details copied. Paste them into any email service.");
       } catch {
-        if (status) status.textContent = `Copy failed. Please email ${EMAIL}.`;
+        showMessage(`Copy failed. Please email ${EMAIL}.`);
       }
     }, true);
   }
@@ -122,9 +123,9 @@
 
       try {
         await copyText(EMAIL);
-        if (status) status.textContent = `${EMAIL} copied.`;
+        showMessage(`${EMAIL} copied.`);
       } catch {
-        if (status) status.textContent = `Email us at ${EMAIL}.`;
+        showMessage(`Email us at ${EMAIL}.`);
       }
     }, true);
   }

@@ -8,9 +8,9 @@
   <title>PestoAi — Simple AI, done properly.</title>
   <link rel="icon" href="assets/pestoai-mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="contact-email.css">
+  <link rel="stylesheet" href="contact-email.css?v=3">
   <script src="script.js" defer></script>
-  <script src="contact-email.js" defer></script>
+  <script src="contact-email.js?v=3" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -258,24 +258,25 @@
             <span><i aria-hidden="true">03</i> Clear scope and price</span>
           </div>
           <div class="contact-actions">
-            <a class="button button-secondary" href="mailto:blaisenewman@gmail.com?subject=PestoAi%20enquiry">Email us</a>
+            <a class="button button-secondary" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;tf=1&amp;to=pestoai.net%40gmail.com&amp;su=PestoAi%20enquiry" target="_blank" rel="noopener">Open in Gmail</a>
+            <span class="contact-email-address">pestoai.net@gmail.com</span>
             <button class="text-button" id="copyEmail" type="button">Copy email address</button>
           </div>
         </div>
 
-        <form class="review-form" id="reviewForm" action="mailto:blaisenewman@gmail.com?subject=PestoAi%20website%20or%20codebase%20review" method="post" enctype="text/plain">
+        <form class="review-form" id="reviewForm">
           <div class="form-row">
             <label><span>Name</span><input type="text" name="name" autocomplete="name" maxlength="100" required></label>
             <label><span>Your email</span><input type="email" name="email" autocomplete="email" inputmode="email" maxlength="160" required></label>
           </div>
           <label><span>Website or repository link</span><input type="url" name="project_url" placeholder="https://example.com" autocomplete="url" inputmode="url" autocapitalize="none" spellcheck="false" maxlength="500" required></label>
           <label><span>What should we look at? <small>optional</small></span><textarea name="problem" rows="4" maxlength="1500" placeholder="For example: the mobile layout is difficult to use, or this process takes too long."></textarea></label>
-          <button class="button button-primary form-submit" type="submit">Open email draft <span aria-hidden="true">→</span></button>
-          <p class="form-note">Your email app should open with everything filled in. Private repository access can be arranged separately.</p>
+          <button class="button button-primary form-submit" type="submit">Open in Gmail <span aria-hidden="true">→</span></button>
+          <p class="form-note">Gmail opens with everything filled in. You can review the message before sending it. Private repository access can be arranged separately.</p>
           <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
           <div class="form-fallback contact-email-actions" id="formFallback">
-            <a class="button button-secondary" id="openGmailFallback" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=blaisenewman%40gmail.com&amp;su=PestoAi%20website%20or%20codebase%20review" target="_blank" rel="noopener">Open in Gmail</a>
-            <button class="text-button" id="copySubmission" type="button">Copy details instead</button>
+            <span class="contact-email-address">Email: pestoai.net@gmail.com</span>
+            <button class="text-button" id="copySubmission" type="button">Copy details</button>
           </div>
         </form>
       </div>
@@ -299,7 +300,7 @@
     <div class="shell footer-inner">
       <a class="brand" href="#top" aria-label="PestoAi home"><span class="brand-mark" aria-hidden="true">P</span><span>PestoAi</span></a>
       <p>Simple AI, measured properly and adapted to your needs.</p>
-      <div class="footer-meta"><a href="mailto:blaisenewman@gmail.com?subject=PestoAi%20enquiry">blaisenewman@gmail.com</a><span class="mono">© <span id="year"></span></span></div>
+      <div class="footer-meta"><a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;tf=1&amp;to=pestoai.net%40gmail.com&amp;su=PestoAi%20enquiry" target="_blank" rel="noopener">pestoai.net@gmail.com</a><span class="mono">© <span id="year"></span></span></div>
     </div>
   </footer>
 

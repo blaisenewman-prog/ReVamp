@@ -84,7 +84,7 @@ Example for a Gmail account using a Google App Password:
 The form sends to:
 
 ```text
-blaisenewman@gmail.com
+pestoai.net@gmail.com
 ```
 
 Change `contact_email` in the same config file to use another inbox.

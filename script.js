@@ -1,5 +1,5 @@
 (() => {
-  const CONTACT_EMAIL = 'blaisenewman@gmail.com';
+  const CONTACT_EMAIL = 'pestoai.net@gmail.com';
   const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
   const scenarios = {
