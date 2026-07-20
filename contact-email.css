@@ -1,0 +1,51 @@
+/* Contact-only reliability fixes. The rest of the site remains controlled by styles.css. */
+#contact .contact-email-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+#contact .contact-email-actions[hidden] {
+  display: none;
+}
+
+#contact .review-form input,
+#contact .review-form textarea,
+#contact .review-form button,
+#contact .review-form a {
+  min-height: 44px;
+}
+
+#contact .review-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+@media (max-width: 700px) {
+  #contact .review-form .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  #contact .contact-actions,
+  #contact .contact-email-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  #contact .contact-actions .button,
+  #contact .contact-actions .text-button,
+  #contact .contact-email-actions .button,
+  #contact .contact-email-actions .text-button,
+  #contact .form-submit {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  #contact .review-form input,
+  #contact .review-form textarea {
+    font-size: 16px;
+  }
+}
