@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="sybix.com — internet knick-knacks and useful links">
+  <meta name="color-scheme" content="light dark">
+  <title>sybix.com — internet knick-knacks</title>
+  <link rel="icon" href="https://www.sybix.com/sybix.ico">
+  <style>
+    :root {
+      --bg: #f4f4ef;
+      --panel: #fbfbf7;
+      --text: #171914;
+      --muted: #62665c;
+      --line: #cfd2c7;
+      --link: #174f8a;
+      --link-hover: #8b2f18;
+      --accent: #2e6d3f;
+      --code-bg: #e8eadf;
+      --shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #11130f;
+        --panel: #181b16;
+        --text: #e8eadf;
+        --muted: #aeb4a6;
+        --line: #353b31;
+        --link: #8bc3ff;
+        --link-hover: #ffad8d;
+        --accent: #82c995;
+        --code-bg: #22271f;
+        --shadow: none;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    a {
+      color: var(--link);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.18em;
+    }
+
+    a:hover {
+      color: var(--link-hover);
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 22px 0 34px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: start;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      margin: 0;
+      font-size: clamp(22px, 4vw, 34px);
+      line-height: 1;
+      letter-spacing: 0.22em;
+      text-transform: lowercase;
+    }
+
+    .brand span:nth-child(1) { color: #557b55; }
+    .brand span:nth-child(2) { color: #9a7040; }
+    .brand span:nth-child(3) { color: #a04a40; }
+    .brand span:nth-child(4) { color: #416e86; }
+    .brand span:nth-child(5) { color: #725d8c; }
+
+    .tagline {
+      margin: 8px 0 0;
+      color: var(--muted);
+    }
+
+    .telemetry {
+      min-width: 285px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .telemetry-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .telemetry-row + .telemetry-row {
+      margin-top: 4px;
+    }
+
+    .telemetry-label {
+      color: var(--muted);
+    }
+
+    .status {
+      color: var(--accent);
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      margin: 16px 0;
+    }
+
+    .filter {
+      width: 100%;
+      min-height: 42px;
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 0;
+      background: var(--panel);
+      color: var(--text);
+      font: inherit;
+    }
+
+    .filter::placeholder {
+      color: var(--muted);
+    }
+
+    .shortcut {
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    kbd {
+      padding: 1px 5px;
+      border: 1px solid var(--line);
+      background: var(--code-bg);
+      font: inherit;
+      font-size: 12px;
+    }
+
+    .quick-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 16px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .quick-links a {
+      display: inline-block;
+      padding: 6px 9px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      text-decoration: none;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      align-items: start;
+    }
+
+    .section {
+      min-width: 0;
+      padding: 13px 14px 14px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .section.wide {
+      grid-column: span 2;
+    }
+
+    .section.full {
+      grid-column: 1 / -1;
+    }
+
+    .section h2 {
+      margin: 0 0 9px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .section h2::before {
+      content: "./";
+      color: var(--accent);
+    }
+
+    .section p {
+      margin: 0;
+    }
+
+    .section p + p {
+      margin-top: 8px;
+    }
+
+    .links {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .links li {
+      display: inline;
+    }
+
+    .links li:not(:last-child)::after {
+      content: " · ";
+      color: var(--muted);
+    }
+
+    .subline {
+      margin-top: 8px;
+    }
+
+    .subline strong {
+      font-weight: 700;
+    }
+
+    .note {
+      margin-top: 10px !important;
+      padding: 8px 9px;
+      border-left: 3px solid var(--accent);
+      background: var(--code-bg);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .no-results {
+      margin: 18px 0;
+      padding: 18px;
+      border: 1px dashed var(--line);
+      color: var(--muted);
+      text-align: center;
+    }
+
+    footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .section.full {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .shell {
+        width: min(100% - 20px, 1180px);
+        padding-top: 14px;
+      }
+
+      .topbar,
+      .controls,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .telemetry {
+        min-width: 0;
+      }
+
+      .section,
+      .section.wide,
+      .section.full {
+        grid-column: auto;
+      }
+
+      .shortcut {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <h1 class="brand" aria-label="sybix">
+          <span>s</span><span>y</span><span>b</span><span>i</span><span>x</span>
+        </h1>
+        <p class="tagline">internet knick-knacks // personal launch console</p>
+      </div>
+
+      <div class="telemetry" aria-label="Dublin time and weather">
+        <div class="telemetry-row">
+          <span class="telemetry-label">dublin.time</span>
+          <time id="clock">--:--:--</time>
+        </div>
+        <div class="telemetry-row">
+          <span class="telemetry-label">dublin.date</span>
+          <span id="date">---</span>
+        </div>
+        <div class="telemetry-row">
+          <span class="telemetry-label">dublin.weather</span>
+          <span id="weather" class="status" aria-live="polite">loading…</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="controls">
+      <label>
+        <span class="sr-only" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Filter links</span>
+        <input id="filter" class="filter" type="search" autocomplete="off" placeholder="filter links… e.g. news, maps, property">
+      </label>
+      <span class="shortcut"><kbd>/</kbd> search &nbsp; <kbd>Esc</kbd> clear</span>
+    </div>
+
+    <nav aria-label="Quick links">
+      <ul class="quick-links">
+        <li><a href="https://mail.google.com/mail/" target="_blank" rel="noopener noreferrer">gmail</a></li>
+        <li><a href="https://calendar.google.com/calendar/render" target="_blank" rel="noopener noreferrer">calendar</a></li>
+        <li><a href="https://www.tide-forecast.com/locations/Dublin-Ireland/tides/latest" target="_blank" rel="noopener noreferrer">dublin tides</a></li>
+        <li><a href="https://news.google.com/" target="_blank" rel="noopener noreferrer">news</a></li>
+        <li><a href="https://maps.google.com/" target="_blank" rel="noopener noreferrer">maps</a></li>
+        <li><a href="https://drive.google.com/drive/my-drive" target="_blank" rel="noopener noreferrer">drive</a></li>
+      </ul>
+    </nav>
+
+    <div id="sections" class="grid">
+      <section class="section" data-search="daily national ireland news rte business journal irish times independent broadsheet waterford whispers">
+        <h2>Daily National</h2>
+        <ul class="links">
+          <li><a href="https://www.rte.ie/" target="_blank" rel="noopener noreferrer">rte</a></li>
+          <li><a href="https://www.rte.ie/news/business/" target="_blank" rel="noopener noreferrer">rte business</a></li>
+          <li><a href="https://www.thejournal.ie/" target="_blank" rel="noopener noreferrer">thejournal</a></li>
+          <li><a href="https://www.irishtimes.com/" target="_blank" rel="noopener noreferrer">irish times</a></li>
+          <li><a href="https://www.independent.ie/" target="_blank" rel="noopener noreferrer">independent</a></li>
+          <li><a href="https://www.broadsheet.ie/" target="_blank" rel="noopener noreferrer">broadsheet</a></li>
+          <li><a href="https://waterfordwhispersnews.com/" target="_blank" rel="noopener noreferrer">waterford whispers</a></li>
+        </ul>
+      </section>
+
+      <section class="section wide" data-search="daily international world news finance ft nyt wsj cnn cnbc msnbc fox reuters markets">
+        <h2>Daily International</h2>
+        <ul class="links">
+          <li><a href="https://www.ft.com/" target="_blank" rel="noopener noreferrer">FT</a></li>
+          <li><a href="https://www.nytimes.com/" target="_blank" rel="noopener noreferrer">NYT</a></li>
+          <li><a href="https://www.wsj.com/news/world" target="_blank" rel="noopener noreferrer">WSJ world</a></li>
+          <li><a href="https://www.wsj.com/news/markets" target="_blank" rel="noopener noreferrer">WSJ markets</a></li>
+          <li><a href="https://www.cnn.com/" target="_blank" rel="noopener noreferrer">CNN</a></li>
+          <li><a href="https://www.cnbc.com/" target="_blank" rel="noopener noreferrer">CNBC</a></li>
+          <li><a href="https://www.msnbc.com/" target="_blank" rel="noopener noreferrer">MSNBC</a></li>
+          <li><a href="https://www.foxnews.com/" target="_blank" rel="noopener noreferrer">Fox</a></li>
+          <li><a href="https://www.reuters.com/markets/" target="_blank" rel="noopener noreferrer">Reuters</a></li>
+        </ul>
+      </section>
+
+      <section class="section full" data-search="banks banking investments finance usd aib ubs stifel goodbody cantor brewin schwab degiro anpost bank of ireland n26 ptsb society generale paypal linkedfinance davy etoro zurich">
+        <h2>Banks &amp; Investments</h2>
+        <ul class="links">
+          <li><a href="https://finance.yahoo.com/portfolio/pf_36/view/v2" target="_blank" rel="noopener noreferrer">USD</a></li>
+          <li><a href="https://onlinebanking.aib.ie/inet/roi/login.htm" target="_blank" rel="noopener noreferrer">aib</a></li>
+          <li><a href="https://onlineservices.ubs.com/" target="_blank" rel="noopener noreferrer">ubs</a></li>
+          <li><a href="https://www.stifel.com/tracker" target="_blank" rel="noopener noreferrer">stifel tracker</a></li>
+          <li><a href="https://access.investor.stifel.com/Modules/Login/login.php" target="_blank" rel="noopener noreferrer">stifel investor</a></li>
+          <li><a href="https://online.goodbody.ie/gbs-online/public/login" target="_blank" rel="noopener noreferrer">goodbody</a></li>
+          <li><a href="https://cantorfitzgerald.ie/cantorportal/" target="_blank" rel="noopener noreferrer">cantor</a></li>
+          <li><a href="https://brewindolphinireland.pershingnexusinvestor.com/InvestorPortal/#/" target="_blank" rel="noopener noreferrer">brewin</a></li>
+          <li><a href="https://client.schwab.com/Login/SignOn/CustomerCenterLogin.aspx" target="_blank" rel="noopener noreferrer">schwab</a></li>
+          <li><a href="https://trader.degiro.nl/login/ie" target="_blank" rel="noopener noreferrer">degiro</a></li>
+          <li><a href="https://www.statesavings.ie/your-savings/login?lang=en-ie" target="_blank" rel="noopener noreferrer">An Post</a></li>
+          <li><a href="https://bankofireland.creditcardservicing.com/BOI_Consumer/Logoff.do" target="_blank" rel="noopener noreferrer">BOI card</a></li>
+          <li><a href="https://app.n26.com/login" target="_blank" rel="noopener noreferrer">N26</a></li>
+          <li><a href="https://www.open24.ie/online/login.aspx" target="_blank" rel="noopener noreferrer">ptsb</a></li>
+          <li><a href="https://particuliers.societegenerale.fr/" target="_blank" rel="noopener noreferrer">sg</a></li>
+          <li><a href="https://www.paypal.com/ie/signin" target="_blank" rel="noopener noreferrer">paypal</a></li>
+          <li><a href="https://www.linkedfinance.com/login" target="_blank" rel="noopener noreferrer">linkedfinance</a></li>
+          <li><a href="https://www.mydavy.ie/login.htm" target="_blank" rel="noopener noreferrer">davy</a></li>
+          <li><a href="https://www.etoro.com/login" target="_blank" rel="noopener noreferrer">etoro</a></li>
+          <li><a href="https://www.businessonline-boi.com/WebUI/login-flow.html" target="_blank" rel="noopener noreferrer">BOI business</a></li>
+          <li><a href="https://www.zurichlife.ie/bgsi/log_on/login.jsp" target="_blank" rel="noopener noreferrer">zurich</a></li>
+        </ul>
+        <p class="note">Security note: verify the domain and certificate before entering banking credentials.</p>
+      </section>
+
+      <section class="section wide" data-search="google home gmail notes news maps calendar youtube drive notebooklm">
+        <h2>Google</h2>
+        <ul class="links">
+          <li><a href="https://www.google.com/" target="_blank" rel="noopener noreferrer">home</a></li>
+          <li><a href="https://mail.google.com/mail/" target="_blank" rel="noopener noreferrer">gmail</a></li>
+          <li><a href="https://mail.google.com/mail/u/0/#label/Notes" target="_blank" rel="noopener noreferrer">notes</a></li>
+          <li><a href="https://news.google.com/" target="_blank" rel="noopener noreferrer">news</a></li>
+          <li><a href="https://maps.google.com/" target="_blank" rel="noopener noreferrer">maps</a></li>
+          <li><a href="https://calendar.google.com/calendar/render" target="_blank" rel="noopener noreferrer">calendar</a></li>
+          <li><a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">youtube</a></li>
+          <li><a href="https://drive.google.com/drive/my-drive" target="_blank" rel="noopener noreferrer">drive</a></li>
+          <li><a href="https://notebooklm.google.com/notebook/cef293db-3481-4849-854a-7b3387b88f18/audio" target="_blank" rel="noopener noreferrer">notebookLM</a></li>
+        </ul>
+      </section>
+
+      <section class="section" data-search="web cpanel icloud notes hosting">
+        <h2>Web</h2>
+        <ul class="links">
+          <li><a href="https://www.mysitearea.com/" target="_blank" rel="noopener noreferrer">cpanel</a></li>
+          <li><a href="https://www.icloud.com/" target="_blank" rel="noopener noreferrer">icloud</a></li>
+          <li><a href="https://www.icloud.com/notes/" target="_blank" rel="noopener noreferrer">icloud notes</a></li>
+        </ul>
+      </section>
+
+      <section class="section full" data-search="cameras lan wan devices panasonic belgrave corsaire garden sitting room router wifi freebox tp link airport dmz">
+        <h2>Cameras &amp; Local Devices</h2>
+        <p class="subline"><strong>LAN:</strong>
+          <a href="http://192.168.192.253/" target="_blank" rel="noopener noreferrer">Panasonic Belgrave</a> ·
+          <a href="http://192.168.0.220/top.htm" target="_blank" rel="noopener noreferrer">Corsaire Garden</a> ·
+          <a href="https://192.168.0.221/jview.htm" target="_blank" rel="noopener noreferrer">Corsaire Sitting Room</a>
+        </p>
+        <p class="subline"><strong>WAN:</strong>
+          <a href="http://cnewman.viewnetcam.com/CgiStart?page=Single&amp;Language=0" target="_blank" rel="noopener noreferrer">Panasonic Belgrave</a> ·
+          <a href="https://eu.mydlink.com/device" target="_blank" rel="noopener noreferrer">Corsaire cameras</a>
+        </p>
+        <p class="subline"><strong>Belgrave:</strong>
+          <a href="http://192.168.192.1/" target="_blank" rel="noopener noreferrer">upc box</a> ·
+          <a href="http://192.168.192.217/" target="_blank" rel="noopener noreferrer">tp-link wap</a> ·
+          <a href="http://192.168.192.214/" target="_blank" rel="noopener noreferrer">front camera</a> ·
+          <a href="http://192.168.192.215/" target="_blank" rel="noopener noreferrer">rear camera</a> ·
+          <a href="http://192.168.192.218/" target="_blank" rel="noopener noreferrer">kitchen airport</a> ·
+          <a href="http://192.168.192.253/" target="_blank" rel="noopener noreferrer">dmz</a>
+        </p>
+        <p class="subline"><strong>Penthouse:</strong>
+          <a href="https://192.168.8.1/" target="_blank" rel="noopener noreferrer">wifi</a>
+        </p>
+        <p class="subline"><strong>Corsaire:</strong>
+          <a href="http://192.168.0.1/" target="_blank" rel="noopener noreferrer">FreeBox</a>
+        </p>
+        <p class="note">LAN addresses work only while connected to the relevant local network. Keep remote camera endpoints protected with strong, unique credentials.</p>
+      </section>
+
+      <section class="section" data-search="texting sms three webtext textlocal">
+        <h2>Texting</h2>
+        <ul class="links">
+          <li><a href="https://webtexts.three.ie/webtext/messages/send" target="_blank" rel="noopener noreferrer">3 webtext</a></li>
+          <li><a href="https://control.txtlocal.co.uk/contactmanager/" target="_blank" rel="noopener noreferrer">textlocal</a></li>
+        </ul>
+      </section>
+
+      <section class="section wide" data-search="useful parcel motel gonzaga canteen three iherb zooplus">
+        <h2>Useful</h2>
+        <ul class="links">
+          <li><a href="https://my.parcelmotel.com/Account/Login" target="_blank" rel="noopener noreferrer">parcelmotel</a></li>
+          <li><a href="https://gonzaga.debitrak.online/Account/Login" target="_blank" rel="noopener noreferrer">gonzaga canteen</a></li>
+          <li><a href="https://login.three.ie/" target="_blank" rel="noopener noreferrer">three</a></li>
+          <li><a href="https://www.iherb.com/" target="_blank" rel="noopener noreferrer">iherb</a></li>
+          <li><a href="https://www.zooplus.ie/" target="_blank" rel="noopener noreferrer">zooplus</a></li>
+        </ul>
+      </section>
+
+      <section class="section wide" data-search="international reading newspapers ny times washington post la times economist new yorker business post">
+        <h2>International Reading</h2>
+        <ul class="links">
+          <li><a href="https://www.nytimes.com/" target="_blank" rel="noopener noreferrer">NY Times</a></li>
+          <li><a href="https://www.washingtonpost.com/" target="_blank" rel="noopener noreferrer">Washington Post</a></li>
+          <li><a href="https://www.latimes.com/" target="_blank" rel="noopener noreferrer">LA Times</a></li>
+          <li><a href="https://www.economist.com/" target="_blank" rel="noopener noreferrer">Economist</a></li>
+          <li><a href="https://www.newyorker.com/" target="_blank" rel="noopener noreferrer">New Yorker</a></li>
+          <li><a href="https://www.businesspost.ie/" target="_blank" rel="noopener noreferrer">Business Post</a></li>
+        </ul>
+      </section>
+
+      <section class="section" data-search="blogs gonzaga forum colin weblog blogspot wordpress">
+        <h2>Blogs</h2>
+        <ul class="links">
+          <li><a href="https://gonzagaforum2018.wordpress.com/" target="_blank" rel="noopener noreferrer">gonzagaforum</a></li>
+          <li><a href="https://cnewman.blogspot.com/" target="_blank" rel="noopener noreferrer">colin weblog</a></li>
+        </ul>
+      </section>
+
+      <section class="section full" data-search="dotcoms websites sybix cpanel 28belgrave colinnewman lombardstreetwest monalea villacorsaire wellingtonquay templebar edit wordpress">
+        <h2>DotComs</h2>
+        <ul class="links">
+          <li><a href="https://sybix.com/" target="_blank" rel="noopener noreferrer">sybix</a> [<a href="https://sybix.com/cpanel" target="_blank" rel="noopener noreferrer">cpanel</a>]</li>
+          <li><a href="http://28belgrave.com/" target="_blank" rel="noopener noreferrer">28belgrave</a></li>
+          <li><a href="http://colinnewman.com/" target="_blank" rel="noopener noreferrer">colinnewman</a></li>
+          <li><a href="http://lombardstreetwest.com/" target="_blank" rel="noopener noreferrer">lombardstreetwest</a></li>
+          <li><a href="http://monalea.com/" target="_blank" rel="noopener noreferrer">monalea</a> [<a href="http://www.monalea.com/wp-login.php" target="_blank" rel="noopener noreferrer">edit</a>]</li>
+          <li><a href="http://villacorsaire.com/" target="_blank" rel="noopener noreferrer">villacorsaire.com</a> [<a href="http://villacorsaire.com/wp/wp-login.php" target="_blank" rel="noopener noreferrer">edit</a>]</li>
+          <li><a href="http://villacorsaire.fr/" target="_blank" rel="noopener noreferrer">villacorsaire.fr</a></li>
+          <li><a href="http://wellingtonquay.com/" target="_blank" rel="noopener noreferrer">wellingtonquay</a></li>
+          <li><a href="http://templebar.rocks/" target="_blank" rel="noopener noreferrer">templebar</a> [<a href="http://templebar.rocks/wp-login.php" target="_blank" rel="noopener noreferrer">edit</a>]</li>
+        </ul>
+      </section>
+
+      <section class="section wide" data-search="property wellington quay monalea corsaire belgrave square plot victoria street">
+        <h2>Property</h2>
+        <ul class="links">
+          <li><a href="https://www.sybix.com/wellingtonquay" target="_blank" rel="noopener noreferrer">Wellington Quay</a></li>
+          <li><a href="https://www.sybix.com/monalea" target="_blank" rel="noopener noreferrer">Monalea</a></li>
+          <li><a href="https://www.sybix.com/corsaire" target="_blank" rel="noopener noreferrer">Corsaire</a></li>
+          <li><a href="https://www.sybix.com/belgrave" target="_blank" rel="noopener noreferrer">Belgrave Square</a></li>
+          <li><a href="https://www.sybix.com/belgraveplot" target="_blank" rel="noopener noreferrer">Belgrave Square Plot</a></li>
+          <li><a href="https://www.sybix.com/victoria" target="_blank" rel="noopener noreferrer">Victoria Street</a></li>
+        </ul>
+      </section>
+
+      <section class="section" data-search="finance currencies usd gbp euro google finance markets">
+        <h2>Finance</h2>
+        <ul class="links">
+          <li><a href="https://www.google.com/finance/quote/EUR-USD" target="_blank" rel="noopener noreferrer">EUR/USD</a></li>
+          <li><a href="https://www.google.com/finance/quote/EUR-GBP" target="_blank" rel="noopener noreferrer">EUR/GBP</a></li>
+          <li><a href="https://finance.yahoo.com/" target="_blank" rel="noopener noreferrer">Yahoo Finance</a></li>
+          <li><a href="https://www.reuters.com/markets/" target="_blank" rel="noopener noreferrer">markets</a></li>
+        </ul>
+        <p class="subline"><strong>Legacy portfolios:</strong>
+          <a href="https://finance.google.com/finance/portfolio?action=view&amp;pid=3&amp;ei=s3LnWYn8N4vDsAHKyLu4Dg" target="_blank" rel="noopener noreferrer">stif.me</a> ·
+          <a href="https://finance.google.com/finance/portfolio?action=view&amp;pid=4&amp;ei=kHLnWdGLK8XBsAG9t53gCA" target="_blank" rel="noopener noreferrer">stif.sitn</a> ·
+          <a href="https://finance.google.com/finance/portfolio?action=view&amp;pid=5&amp;ei=pXLnWdDHF9aLswGQvZ3oAQ" target="_blank" rel="noopener noreferrer">stif.pmc</a> ·
+          <a href="https://finance.google.com/finance/portfolio?action=view&amp;pid=6&amp;ei=SXLnWfnLLdqCswHktquQAw" target="_blank" rel="noopener noreferrer">td.me</a> ·
+          <a href="https://finance.google.com/finance/portfolio?action=view&amp;pid=8&amp;ei=anLnWfGnLMLHsQGM8LOQDg" target="_blank" rel="noopener noreferrer">td.theo</a> ·
+          <a href="https://finance.google.com/finance/portfolio?action=view&amp;pid=7&amp;ei=UXLnWcnhK8HEswGkmojgBg" target="_blank" rel="noopener noreferrer">gbdy.me</a>
+        </p>
+      </section>
+    </div>
+
+    <p id="noResults" class="no-results" hidden>No matching sections. Press Esc to clear the filter.</p>
+
+    <footer>
+      <span>sybix.com // last rendered <time id="rendered">---</time></span>
+      <span>redesign concept by <a href="https://pestoai.net/" target="_blank" rel="noopener noreferrer">PestoAI</a></span>
+    </footer>
+  </main>
+
+  <script>
+    (() => {
+      const clock = document.getElementById('clock');
+      const date = document.getElementById('date');
+      const weather = document.getElementById('weather');
+      const filter = document.getElementById('filter');
+      const sections = [...document.querySelectorAll('.section')];
+      const noResults = document.getElementById('noResults');
+      const rendered = document.getElementById('rendered');
+
+      const timeFormatter = new Intl.DateTimeFormat('en-IE', {
+        timeZone: 'Europe/Dublin',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      });
+
+      const dateFormatter = new Intl.DateTimeFormat('en-IE', {
+        timeZone: 'Europe/Dublin',
+        weekday: 'short',
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
+
+      function updateClock() {
+        const now = new Date();
+        clock.textContent = timeFormatter.format(now);
+        date.textContent = dateFormatter.format(now);
+      }
+
+      updateClock();
+      setInterval(updateClock, 1000);
+      rendered.textContent = dateFormatter.format(new Date());
+
+      const weatherLabels = {
+        0: 'clear',
+        1: 'mostly clear',
+        2: 'partly cloudy',
+        3: 'overcast',
+        45: 'fog',
+        48: 'rime fog',
+        51: 'light drizzle',
+        53: 'drizzle',
+        55: 'heavy drizzle',
+        56: 'freezing drizzle',
+        57: 'heavy freezing drizzle',
+        61: 'light rain',
+        63: 'rain',
+        65: 'heavy rain',
+        66: 'freezing rain',
+        67: 'heavy freezing rain',
+        71: 'light snow',
+        73: 'snow',
+        75: 'heavy snow',
+        77: 'snow grains',
+        80: 'light showers',
+        81: 'showers',
+        82: 'heavy showers',
+        85: 'snow showers',
+        86: 'heavy snow showers',
+        95: 'thunderstorm',
+        96: 'thunderstorm + hail',
+        99: 'heavy thunderstorm + hail'
+      };
+
+      async function loadWeather() {
+        const endpoint = 'https://api.open-meteo.com/v1/forecast?latitude=53.3498&longitude=-6.2603&current=temperature_2m,weather_code,wind_speed_10m&timezone=Europe%2FDublin';
+
+        try {
+          const response = await fetch(endpoint, { cache: 'no-store' });
+          if (!response.ok) throw new Error('Weather request failed');
+
+          const data = await response.json();
+          const current = data.current;
+          const units = data.current_units;
+          const condition = weatherLabels[current.weather_code] || 'conditions unknown';
+
+          weather.textContent = `${Math.round(current.temperature_2m)}${units.temperature_2m} · ${condition} · wind ${Math.round(current.wind_speed_10m)} ${units.wind_speed_10m}`;
+        } catch (error) {
+          weather.textContent = 'unavailable';
+          weather.title = 'Live weather could not be loaded.';
+        }
+      }
+
+      loadWeather();
+      setInterval(loadWeather, 15 * 60 * 1000);
+
+      function applyFilter() {
+        const query = filter.value.trim().toLowerCase();
+        let visible = 0;
+
+        sections.forEach((section) => {
+          const haystack = `${section.dataset.search || ''} ${section.textContent}`.toLowerCase();
+          const match = !query || haystack.includes(query);
+          section.hidden = !match;
+          if (match) visible += 1;
+        });
+
+        noResults.hidden = visible !== 0;
+      }
+
+      filter.addEventListener('input', applyFilter);
+
+      document.addEventListener('keydown', (event) => {
+        const activeTag = document.activeElement?.tagName;
+        const isTyping = activeTag === 'INPUT' || activeTag === 'TEXTAREA';
+
+        if (event.key === '/' && !isTyping) {
+          event.preventDefault();
+          filter.focus();
+        }
+
+        if (event.key === 'Escape') {
+          filter.value = '';
+          applyFilter();
+          filter.blur();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

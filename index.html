@@ -9,8 +9,10 @@
   <link rel="icon" href="assets/pestoai-mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="contact-email.css?v=3">
+  <link rel="stylesheet" href="designed-by-us.css?v=2">
   <script src="script.js" defer></script>
   <script src="contact-email.js?v=3" defer></script>
+  <script src="designed-by-us.js?v=2" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -24,7 +26,7 @@
 
       <nav class="desktop-nav" aria-label="Primary navigation">
         <a href="#demo">Demo</a>
-        <a href="#redesign">Redesign a site</a>
+        <a href="#designed">Designed by us</a>
         <button class="nav-button" type="button" data-open-dialog="aboutDialog">Find out more</button>
         <a href="#contact">Contact</a>
       </nav>
@@ -40,7 +42,7 @@
 
     <nav class="mobile-menu shell" id="mobileMenu" aria-label="Mobile navigation" hidden>
       <a href="#demo">Demo</a>
-      <a href="#redesign">Redesign a site</a>
+      <a href="#designed">Designed by us</a>
       <button type="button" data-open-dialog="aboutDialog">Find out more</button>
       <a href="#contact">Contact</a>
     </nav>
@@ -201,6 +203,84 @@
         <li><span class="mono">02</span><div><h3>Define KPIs</h3><p>We agree how success will be measured before changing the product, workflow or codebase.</p></div></li>
         <li><span class="mono">03</span><div><h3>Build and improve</h3><p>We implement the highest-value change, measure it and adapt the next step to the evidence.</p></div></li>
       </ol>
+    </section>
+
+    <section class="designed-section" id="designed" aria-labelledby="designedTitle">
+      <div class="shell">
+        <div class="section-heading designed-heading">
+          <div>
+            <p class="eyebrow">Designed by us</p>
+            <h2 id="designedTitle">Selected website work.</h2>
+          </div>
+          <p>Move through three projects and explore the available website versions without leaving the page.</p>
+        </div>
+
+        <div class="designed-project-tabs" role="tablist" aria-label="Designed by PestoAi projects">
+          <button class="designed-project-tab is-active" type="button" role="tab" aria-selected="true" data-designed-project="sybix">
+            <span class="mono">01</span><strong>Sybix</strong><small>Personal internet console</small>
+          </button>
+          <button class="designed-project-tab" type="button" role="tab" aria-selected="false" data-designed-project="wriddle">
+            <span class="mono">02</span><strong>Wriddle</strong><small>Daily riddle experience</small>
+          </button>
+          <button class="designed-project-tab" type="button" role="tab" aria-selected="false" data-designed-project="coming-soon">
+            <span class="mono">03</span><strong>Coming soon</strong><small>Current client project</small>
+          </button>
+        </div>
+
+        <article class="designed-showcase" data-designed-showcase>
+          <div class="designed-project-copy">
+            <div class="designed-project-meta">
+              <p class="mini-label mono" id="designedProjectNumber">PROJECT 01 · WEBSITE REDESIGN</p>
+              <span class="designed-status" id="designedProjectStatus">LIVE PREVIEW</span>
+            </div>
+            <h3 id="designedProjectName">Sybix</h3>
+            <p id="designedProjectSummary">A personal internet launch console redesigned for faster scanning and everyday use, while preserving the deliberately simple, engineer-focused character of the original site.</p>
+            <div class="designed-outcome" id="designedProjectOutcome">
+              <strong>What changed</strong>
+              <p>Dense links were reorganised into clear groups, with filtering, live Dublin information and a responsive layout added without turning the site into a conventional corporate homepage.</p>
+            </div>
+            <div class="designed-tags" id="designedProjectTags" aria-label="Project services">
+              <span>Information design</span><span>Responsive layout</span><span>Useful utilities</span>
+            </div>
+
+            <div class="designed-project-nav" aria-label="Project navigation">
+              <button class="designed-arrow" id="designedPrevious" type="button" aria-label="Previous project">←</button>
+              <span class="mono" id="designedProjectCount">01 / 03</span>
+              <button class="designed-arrow" id="designedNext" type="button" aria-label="Next project">→</button>
+            </div>
+          </div>
+
+          <div class="designed-preview-card">
+            <div class="designed-browser-bar">
+              <div class="designed-window-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+              <span class="designed-address mono" id="designedAddress">sybix / after</span>
+              <a class="designed-open-link" id="designedOpenLink" href="designed-sites/sybix/after/index.html" target="_blank" rel="noopener">Open current view ↗</a>
+            </div>
+
+            <div class="designed-view-controls" id="designedViewControls" role="group" aria-label="Choose website version">
+              <button class="designed-view-button" type="button" data-designed-view="before" aria-pressed="false">Before</button>
+              <button class="designed-view-button is-active" type="button" data-designed-view="after" aria-pressed="true">After</button>
+            </div>
+
+            <div class="designed-frame-wrap" data-designed-frame-wrap>
+              <div class="designed-loading" aria-hidden="true"><span></span><small class="mono">LOADING VIEW</small></div>
+              <iframe
+                id="designedSiteFrame"
+                title="After version of the Sybix website"
+                src="designed-sites/sybix/after/index.html"
+                loading="lazy"
+                sandbox="allow-scripts allow-forms"
+                referrerpolicy="no-referrer"
+              ></iframe>
+            </div>
+
+            <div class="designed-caption">
+              <span class="mono" id="designedViewLabel">AFTER</span>
+              <p id="designedViewDescription">A cleaner, searchable personal launch console that remains intentionally compact and practical.</p>
+            </div>
+          </div>
+        </article>
+      </div>
     </section>
 
     <section class="generator-section" id="redesign" hidden>
