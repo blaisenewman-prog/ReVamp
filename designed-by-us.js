@@ -58,21 +58,28 @@
       }
     },
     {
-      id: "coming-soon",
-      number: "PROJECT 03 · IN DEVELOPMENT",
-      status: "COMING SOON",
-      name: "New client website",
-      summary: "A new website currently being developed with PestoAi. The complete company name and case study will be published once the project is ready to launch.",
-      outcome: "The work is focused on simplifying the message, establishing a strong mobile hierarchy and making the main customer action easier to understand and complete.",
-      tags: ["In development", "Mobile hierarchy", "Clear conversion path"],
-      defaultView: "preview",
+      id: "oilean",
+      number: "PROJECT 03 · WEBSITE REDESIGN",
+      status: "LIVE PREVIEW",
+      name: "Oileán",
+      summary: "A mission-led website concept for an organisation strengthening island participation and influence in global climate, ocean and sustainable-development decision-making.",
+      outcome: "The redesign introduces a stronger opening message, clearer programme pathways, more engaging event presentation and a responsive enquiry journey while preserving Oileán’s real mission and work.",
+      tags: ["Mission-led design", "Programme clarity", "Responsive website"],
+      defaultView: "after",
       views: {
-        preview: {
-          url: "designed-sites/coming-soon/preview/index.html",
-          label: "IN PROGRESS",
-          address: "client-project / coming-soon",
-          title: "Coming soon client project preview",
-          description: "A restrained placeholder while the full website and verified case study are being completed."
+        before: {
+          url: "https://www.oilean.ie/",
+          label: "BEFORE · LIVE SITE",
+          address: "oilean.ie / live website",
+          title: "Current live Oileán website",
+          description: "The Before view uses the current live oilean.ie website. Some websites block embedded previews; Open current view will always take you to the original site."
+        },
+        after: {
+          url: "designed-sites/oilean/after/index.html",
+          label: "AFTER",
+          address: "oilean / PestoAi concept",
+          title: "PestoAi redesign concept for Oileán",
+          description: "A polished, responsive one-page concept with clearer programmes, events, mission and contact pathways."
         }
       }
     }

@@ -8,34 +8,38 @@ UPLOAD TO THE ROOT OF YOUR GITHUB PAGES REPOSITORY:
 - contact-email.js
 - the complete designed-sites folder
 
-Keep your existing styles.css, script.js and assets folder. Do not delete them.
+Keep your existing styles.css, script.js and root assets folder. Do not delete them.
 
-PROJECT FILE LOCATIONS
+PROJECTS
 
-Sybix original:
-designed-sites/sybix/before/index.html
+Sybix:
+- Before: designed-sites/sybix/before/index.html
+- After: designed-sites/sybix/after/index.html
 
-Sybix redesign:
-designed-sites/sybix/after/index.html
+Wriddle:
+- Before: designed-sites/wriddle/before/index.html
+- After: designed-sites/wriddle/after/index.html
 
-Wriddle early/original version:
-designed-sites/wriddle/before/index.html
+Oileán:
+- Before: https://www.oilean.ie/ (the live website)
+- After: designed-sites/oilean/after/index.html
 
-Wriddle redesign:
-designed-sites/wriddle/after/index.html
+IMPORTANT FOR OILEÁN ASSETS
 
-Coming-soon preview:
-designed-sites/coming-soon/preview/index.html
+Upload the ENTIRE folder below, not only index.html:
 
-The package contains working preview versions at all five locations. To use your exact full HTML files, overwrite the relevant index.html file. If a website uses separate CSS, JavaScript, images or assets, copy its ENTIRE site into that before/after folder and keep its main file named index.html.
+designed-sites/oilean/after/
+├── index.html
+├── styles.css
+├── script.js
+└── assets/
+    ├── hero-island.webp
+    ├── cop30-leaders.webp
+    ├── cop30-group.webp
+    ├── un-speaker.webp
+    ├── unoc.webp
+    └── cop31.webp
 
-EDITING THE PROJECT DESCRIPTIONS
+The Oileán HTML uses relative paths such as assets/hero-island.webp. Those paths only work when the assets folder remains next to index.html in the exact structure above.
 
-Open designed-by-us.js. The three project entries at the top contain:
-- name
-- summary
-- outcome
-- tags
-- before/after file paths
-
-The third entry is intentionally unnamed until the client project is ready to be published.
+The Before toggle attempts to show the live Oileán website inside the preview. External websites can block iframe embedding using their own security settings. The “Open current view” link remains available and opens the original site directly.
