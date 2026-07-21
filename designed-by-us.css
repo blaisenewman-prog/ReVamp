@@ -114,3 +114,30 @@
 @media (max-width: 1040px) and (min-width: 701px) {
   .designed-project-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* Clear portfolio disclaimer for early concept work. */
+.designed-concept-note {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: .8rem 1rem;
+  align-items: start;
+  margin: -1rem 0 1.5rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(28, 139, 74, .2);
+  border-radius: .9rem;
+  background: rgba(255, 255, 255, .7);
+}
+.designed-concept-note strong {
+  color: #173c27;
+  font-size: .82rem;
+  white-space: nowrap;
+}
+.designed-concept-note span {
+  color: #526057;
+  font-size: .84rem;
+  line-height: 1.55;
+}
+@media (max-width: 640px) {
+  .designed-concept-note { grid-template-columns: 1fr; gap: .35rem; margin-top: -.5rem; }
+  .designed-concept-note strong { white-space: normal; }
+}

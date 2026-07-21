@@ -6,38 +6,12 @@
 
   const projects = [
     {
-      id: "sybix",
-      number: "PROJECT 01 · WEBSITE REDESIGN",
-      status: "LIVE PREVIEW",
-      name: "Sybix",
-      summary: "A personal internet launch console redesigned for faster scanning and everyday use, while preserving the deliberately simple, engineer-focused character of the original site.",
-      outcome: "Dense links were reorganised into clear groups, with filtering, live Dublin information and a responsive layout added without turning the site into a conventional corporate homepage.",
-      tags: ["Information design", "Responsive layout", "Useful utilities"],
-      defaultView: "after",
-      views: {
-        before: {
-          url: "designed-sites/sybix/before/index.html",
-          label: "BEFORE",
-          address: "sybix / before",
-          title: "Original version of the Sybix website",
-          description: "The original link-heavy homepage: useful and personal, but difficult to scan on smaller screens."
-        },
-        after: {
-          url: "designed-sites/sybix/after/index.html",
-          label: "AFTER",
-          address: "sybix / after",
-          title: "After version of the Sybix website",
-          description: "A cleaner, searchable personal launch console that remains intentionally compact and practical."
-        }
-      }
-    },
-    {
       id: "wriddle",
-      number: "PROJECT 02 · PRODUCT WEBSITE",
-      status: "LIVE PREVIEW",
+      number: "PROJECT 01 · PRODUCT WEBSITE",
+      status: "FIRST RENDITION",
       name: "Wriddle",
       summary: "A focused daily-riddle website designed to make one small challenge feel clear, memorable and enjoyable on both mobile and desktop.",
-      outcome: "The experience was shaped around the daily riddle itself, with a stronger identity, straightforward answer checking, a countdown, result sharing and space for a lightweight leaderboard.",
+      outcome: "The experience was shaped around the daily riddle itself, with a stronger identity, straightforward answer checking, a countdown and a clearer mobile play flow.",
       tags: ["Product identity", "Game interaction", "Mobile-first UX"],
       defaultView: "after",
       views: {
@@ -46,24 +20,24 @@
           label: "BEFORE",
           address: "wriddle / before",
           title: "Early version of the Wriddle website",
-          description: "A functional first version with the core riddle mechanic but limited hierarchy and personality."
+          description: "A functional early version with the core riddle mechanic but limited hierarchy and product identity."
         },
         after: {
           url: "designed-sites/wriddle/after/index.html",
-          label: "AFTER",
-          address: "wriddle / after",
-          title: "After version of the Wriddle website",
-          description: "A polished daily game with a distinctive visual identity and a clearer, responsive play flow."
+          label: "AFTER · FIRST RENDITION",
+          address: "wriddle / first rendition",
+          title: "First-rendition redesign of the Wriddle website",
+          description: "An early redesign direction with a clearer daily-game flow and stronger product identity—not a final production version."
         }
       }
     },
     {
       id: "oilean",
-      number: "PROJECT 03 · WEBSITE REDESIGN",
-      status: "LIVE PREVIEW",
+      number: "PROJECT 02 · WEBSITE REDESIGN",
+      status: "FIRST RENDITION",
       name: "Oileán",
       summary: "A mission-led website concept for an organisation strengthening island participation and influence in global climate, ocean and sustainable-development decision-making.",
-      outcome: "The redesign introduces a stronger opening message, clearer programme pathways, more engaging event presentation and a responsive enquiry journey while preserving Oileán’s real mission and work.",
+      outcome: "The concept introduces a stronger opening message, clearer programme pathways, more engaging event presentation and a responsive enquiry journey while preserving Oileán’s mission and work.",
       tags: ["Mission-led design", "Programme clarity", "Responsive website"],
       defaultView: "after",
       views: {
@@ -72,25 +46,25 @@
           label: "BEFORE · LIVE SITE",
           address: "oilean.ie / live website",
           title: "Current live Oileán website",
-          description: "The Before view uses the current live oilean.ie website. Some websites block embedded previews; Open current view will always take you to the original site."
+          description: "The Before view uses the live oilean.ie website. Some sites block embedded previews; Open current view will still open the original site."
         },
         after: {
           url: "designed-sites/oilean/after/index.html",
-          label: "AFTER",
-          address: "oilean / PestoAi concept",
-          title: "PestoAi redesign concept for Oileán",
-          description: "A polished, responsive one-page concept with clearer programmes, events, mission and contact pathways."
+          label: "AFTER · FIRST RENDITION",
+          address: "oilean / first rendition",
+          title: "First-rendition PestoAi concept for Oileán",
+          description: "An early one-page redesign direction showing clearer programmes, events, mission and contact pathways—not a final client product."
         }
       }
     },
     {
       id: "trex-runner",
-      number: "PROJECT 04 · GAME EXPERIENCE",
-      status: "INTERACTIVE PROTOTYPE",
+      number: "PROJECT 03 · GAME EXPERIENCE",
+      status: "PLAYABLE FIRST RENDITION",
       name: "T-Rex Runner",
-      summary: "A cleaner, responsive version of the familiar browser runner, designed to make the game easier to understand, easier to play on mobile and more rewarding to replay.",
-      outcome: "The redesign places the playable game first, adds clear touch and keyboard controls, local high-score tracking, day and night modes and a much stronger visual hierarchy without overcomplicating the original idea.",
-      tags: ["Game interface", "Touch controls", "Responsive interaction"],
+      summary: "A deliberately simple redesign of the familiar browser runner, focused on making the game clear, responsive and easy to play with a keyboard or touchscreen.",
+      outcome: "The unnecessary page content was removed so the playable game remains the focus, with cleaner score feedback, direct controls and a more recognisable T-Rex character.",
+      tags: ["Playable prototype", "Touch controls", "Simple interface"],
       defaultView: "after",
       views: {
         before: {
@@ -98,14 +72,40 @@
           label: "BEFORE · LIVE SITE",
           address: "trex-runner.com / live website",
           title: "Current live T-Rex Runner website",
-          description: "The Before view uses the current trex-runner.com website. If the website blocks embedded previews, Open current view will still take you directly to it."
+          description: "The Before view uses the live trex-runner.com website. If embedding is blocked, Open current view will still open it directly."
         },
         after: {
           url: "designed-sites/trex-runner/after/index.html",
-          label: "AFTER · INTERACTIVE",
-          address: "t-rex runner / PestoAi concept",
-          title: "Interactive PestoAi redesign concept for T-Rex Runner",
-          description: "A playable, responsive redesign with clearer controls, local scores, improved mobile usability and a simple arcade-inspired identity."
+          label: "AFTER · FIRST RENDITION",
+          address: "t-rex runner / first rendition",
+          title: "Playable first-rendition PestoAi concept for T-Rex Runner",
+          description: "A minimal playable redesign with clearer controls and a more recognisable T-Rex—not a final production game."
+        }
+      }
+    },
+    {
+      id: "sybix",
+      number: "PROJECT 04 · WEBSITE REDESIGN",
+      status: "FIRST RENDITION",
+      name: "Sybix",
+      summary: "A personal internet launch console redesigned for faster scanning and everyday use, while preserving the deliberately simple, engineer-focused character of the original site.",
+      outcome: "Dense links were reorganised into clear groups, with filtering, useful information and a responsive layout added without turning the site into a conventional corporate homepage.",
+      tags: ["Information design", "Responsive layout", "Useful utilities"],
+      defaultView: "after",
+      views: {
+        before: {
+          url: "designed-sites/sybix/before/index.html",
+          label: "BEFORE",
+          address: "sybix / before",
+          title: "Redacted original-style version of the Sybix website",
+          description: "A redacted representation of the original link-heavy homepage, preserving the layout without publishing private destinations."
+        },
+        after: {
+          url: "designed-sites/sybix/after/index.html",
+          label: "AFTER · FIRST RENDITION",
+          address: "sybix / first rendition",
+          title: "First-rendition redesign of the Sybix website",
+          description: "An early searchable launch-console concept that remains intentionally compact and practical—not a final client product."
         }
       }
     }
@@ -203,9 +203,9 @@
     });
 
     tab.addEventListener("keydown", (event) => {
-      if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+      if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return;
       event.preventDefault();
-      const direction = event.key === 'ArrowRight' ? 1 : -1;
+      const direction = event.key === "ArrowRight" ? 1 : -1;
       const nextIndex = (projectIndex + direction + projects.length) % projects.length;
       renderProject(nextIndex);
       els.tabs[nextIndex]?.focus();

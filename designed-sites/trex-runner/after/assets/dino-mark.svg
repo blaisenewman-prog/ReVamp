@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
   <title id="title">T-Rex Runner mark</title>
-  <rect width="64" height="64" rx="14" fill="#11130f"/>
-  <path fill="#d7ff63" d="M16 15h27v5h6v15H34v6h8v5H30v-6h-6v11h-6V34h-5V22h3zm7 6v5h5v-5zm20 5h-6v4h6z"/>
+  <rect width="64" height="64" rx="13" fill="#171914"/>
+  <path fill="#d7ff63" d="M8 38l14-9 11-1 4-15h15l5 5v13H42v7l-5 2-2 12h-7l2-12h-7l-3 12h-7l4-15-9 5zm35-19v4h4v-4zm-2 12h11v4H41z"/>
 </svg>

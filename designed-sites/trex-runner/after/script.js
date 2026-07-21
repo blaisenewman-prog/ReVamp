@@ -12,24 +12,20 @@
   const duckButton = document.getElementById("duckButton");
   const soundButton = document.getElementById("soundButton");
   const themeButton = document.getElementById("themeButton");
-
   const scoreValue = document.getElementById("scoreValue");
   const bestValue = document.getElementById("bestValue");
   const speedValue = document.getElementById("speedValue");
   const finalScore = document.getElementById("finalScore");
   const gameOverMessage = document.getElementById("gameOverMessage");
-  const boardBest = document.getElementById("boardBest");
-  const boardLatest = document.getElementById("boardLatest");
-  const boardRuns = document.getElementById("boardRuns");
   const soundState = document.getElementById("soundState");
   const themeState = document.getElementById("themeState");
 
   const store = {
-    get(key, fallback = 0) {
-      try { return Number(localStorage.getItem(key)) || fallback; } catch { return fallback; }
+    get(key) {
+      try { return Number(localStorage.getItem(key)) || 0; } catch { return 0; }
     },
     set(key, value) {
-      try { localStorage.setItem(key, String(value)); } catch { /* local storage is optional */ }
+      try { localStorage.setItem(key, String(value)); } catch { /* optional */ }
     }
   };
 
@@ -37,25 +33,23 @@
     running: false,
     gameOver: false,
     score: 0,
-    best: store.get("trexBest"),
-    latest: store.get("trexLatest"),
-    runs: store.get("trexRuns"),
-    speed: 430,
+    best: store.get("trexBestV2"),
+    speed: 420,
     spawnTimer: 0,
-    nextSpawn: 1.15,
+    nextSpawn: 1.25,
     groundOffset: 0,
+    animationTime: 0,
     lastTime: 0,
     sound: false,
     night: false,
-    obstacles: [],
-    particles: []
+    obstacles: []
   };
 
   const dino = {
-    x: 118,
+    x: 92,
     y: 0,
-    width: 56,
-    height: 66,
+    width: 86,
+    height: 72,
     velocityY: 0,
     grounded: true,
     ducking: false
@@ -63,14 +57,23 @@
 
   function colours() {
     return state.night
-      ? { sky: "#191c16", ink: "#f2f0e8", muted: "#565b4f", acid: "#d7ff63", rust: "#ff7955" }
-      : { sky: "#fbfaf5", ink: "#11130f", muted: "#c8c8bc", acid: "#b6de3f", rust: "#e9633c" };
+      ? { sky: "#191c16", ink: "#f3f1e9", muted: "#51564b", accent: "#ff7955", eye: "#d7ff63" }
+      : { sky: "#fbfaf5", ink: "#171914", muted: "#c7c7bb", accent: "#d85f3c", eye: "#d7ff63" };
+  }
+
+  function groundY() {
+    return canvas.logicalHeight - 62;
+  }
+
+  function pad(value, size = 5) {
+    return String(Math.max(0, Math.floor(value))).padStart(size, "0");
   }
 
   function resizeCanvas() {
-    const width = Math.max(640, Math.floor(stage.clientWidth));
-    const height = window.innerWidth < 540 ? 360 : 440;
+    const width = Math.max(620, Math.floor(stage.clientWidth));
+    const height = window.innerWidth < 540 ? 340 : 400;
     const ratio = Math.min(window.devicePixelRatio || 1, 2);
+
     canvas.width = Math.floor(width * ratio);
     canvas.height = Math.floor(height * ratio);
     canvas.style.height = `${height}px`;
@@ -81,34 +84,28 @@
     draw();
   }
 
-  function groundY() { return canvas.logicalHeight - 72; }
-  function pad(value, size = 5) { return String(Math.max(0, Math.floor(value))).padStart(size, "0"); }
-
-  function updateBoard() {
+  function updateScore() {
     scoreValue.textContent = pad(state.score);
     bestValue.textContent = pad(state.best);
-    speedValue.textContent = `${(state.speed / 430).toFixed(1)}×`;
-    boardBest.textContent = pad(state.best);
-    boardLatest.textContent = pad(state.latest);
-    boardRuns.textContent = pad(state.runs, 3);
+    speedValue.textContent = `${(state.speed / 420).toFixed(1)}×`;
   }
 
   function reset() {
     state.score = 0;
-    state.speed = 430;
+    state.speed = 420;
     state.spawnTimer = 0;
-    state.nextSpawn = 1.15;
+    state.nextSpawn = 1.25;
     state.groundOffset = 0;
+    state.animationTime = 0;
     state.obstacles = [];
-    state.particles = [];
     state.gameOver = false;
-    dino.width = 56;
-    dino.height = 66;
+    dino.width = 86;
+    dino.height = 72;
     dino.velocityY = 0;
     dino.grounded = true;
     dino.ducking = false;
     dino.y = groundY() - dino.height;
-    updateBoard();
+    updateScore();
   }
 
   function start() {
@@ -117,28 +114,30 @@
     startOverlay.hidden = true;
     gameOverOverlay.hidden = true;
     state.lastTime = performance.now();
-    beep(480, .045);
+    beep(480, 0.04);
     requestAnimationFrame(loop);
   }
 
   function endGame() {
     state.running = false;
     state.gameOver = true;
-    state.latest = Math.floor(state.score);
-    state.runs += 1;
-    if (state.latest > state.best) state.best = state.latest;
-    store.set("trexLatest", state.latest);
-    store.set("trexRuns", state.runs);
-    store.set("trexBest", state.best);
-    finalScore.textContent = pad(state.latest);
-    gameOverMessage.textContent = state.latest === state.best && state.latest > 0
-      ? "New personal best. That one is yours to beat."
-      : state.latest > 250
-        ? "Good pace. The course was only getting faster."
-        : "Timing is everything. Take another run.";
-    updateBoard();
+    const score = Math.floor(state.score);
+    const previousBest = state.best;
+
+    if (score > state.best) {
+      state.best = score;
+      store.set("trexBestV2", state.best);
+    }
+
+    finalScore.textContent = pad(score);
+    gameOverMessage.textContent = score > previousBest
+      ? "New best. Go again."
+      : score > 250
+        ? "Good run. Try to beat it."
+        : "Try another run.";
+    updateScore();
     gameOverOverlay.hidden = false;
-    beep(145, .12);
+    beep(145, 0.11);
   }
 
   function jump() {
@@ -147,51 +146,69 @@
       return;
     }
     if (!dino.grounded) return;
+
     dino.ducking = false;
-    dino.height = 66;
+    dino.width = 86;
+    dino.height = 72;
     dino.velocityY = -900;
     dino.grounded = false;
-    beep(620, .035);
+    beep(620, 0.03);
   }
 
   function setDuck(active) {
     if (!state.running || !dino.grounded) return;
     dino.ducking = active;
-    dino.height = active ? 42 : 66;
-    dino.width = active ? 72 : 56;
+    dino.width = active ? 94 : 86;
+    dino.height = active ? 49 : 72;
     dino.y = groundY() - dino.height;
   }
 
   function spawnObstacle() {
-    const birdChance = state.score > 170 && Math.random() > .68;
+    const birdChance = state.score > 160 && Math.random() > 0.7;
     if (birdChance) {
-      state.obstacles.push({ type: "bird", x: canvas.logicalWidth + 40, y: groundY() - 85, width: 54, height: 26, flap: 0 });
+      state.obstacles.push({
+        type: "bird",
+        x: canvas.logicalWidth + 50,
+        y: groundY() - 83,
+        width: 54,
+        height: 27,
+        flap: 0
+      });
       return;
     }
-    const tall = Math.random() > .58;
-    state.obstacles.push({ type: "cactus", x: canvas.logicalWidth + 40, y: groundY() - (tall ? 66 : 48), width: tall ? 32 : 42, height: tall ? 66 : 48 });
+
+    const tall = Math.random() > 0.58;
+    state.obstacles.push({
+      type: "cactus",
+      x: canvas.logicalWidth + 50,
+      y: groundY() - (tall ? 66 : 48),
+      width: tall ? 32 : 42,
+      height: tall ? 66 : 48
+    });
   }
 
   function collide(a, b) {
-    const insetX = 9;
-    const insetY = 7;
-    return a.x + insetX < b.x + b.width &&
-      a.x + a.width - insetX > b.x &&
-      a.y + insetY < b.y + b.height &&
-      a.y + a.height - insetY > b.y;
+    const xInset = a.ducking ? 13 : 15;
+    const topInset = a.ducking ? 8 : 10;
+    const bottomInset = 5;
+    return a.x + xInset < b.x + b.width &&
+      a.x + a.width - xInset > b.x &&
+      a.y + topInset < b.y + b.height &&
+      a.y + a.height - bottomInset > b.y;
   }
 
   function update(delta) {
     state.score += delta * (state.speed / 18);
-    state.speed = Math.min(920, 430 + state.score * .64);
+    state.speed = Math.min(900, 420 + state.score * 0.62);
     state.groundOffset = (state.groundOffset + state.speed * delta) % 38;
+    state.animationTime += delta;
     state.spawnTimer += delta;
 
     if (state.spawnTimer >= state.nextSpawn) {
       spawnObstacle();
       state.spawnTimer = 0;
-      const pace = Math.max(.56, 1.2 - state.speed / 1250);
-      state.nextSpawn = pace + Math.random() * .72;
+      const pace = Math.max(0.58, 1.22 - state.speed / 1250);
+      state.nextSpawn = pace + Math.random() * 0.72;
     }
 
     dino.velocityY += 2350 * delta;
@@ -210,40 +227,94 @@
         return;
       }
     }
-    state.obstacles = state.obstacles.filter((item) => item.x + item.width > -30);
-    updateBoard();
+
+    state.obstacles = state.obstacles.filter((obstacle) => obstacle.x + obstacle.width > -30);
+    updateScore();
+  }
+
+  function polygon(points) {
+    ctx.beginPath();
+    ctx.moveTo(points[0][0], points[0][1]);
+    for (let i = 1; i < points.length; i += 1) ctx.lineTo(points[i][0], points[i][1]);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawStandingTrex(c) {
+    const legPhase = Math.sin(state.animationTime * 15) > 0;
+
+    ctx.fillStyle = c.ink;
+
+    // Long tail and heavy body.
+    polygon([[0, 43], [24, 29], [48, 28], [57, 40], [45, 55], [22, 53], [7, 48]]);
+
+    // Neck, large skull and long jaw.
+    polygon([[43, 31], [49, 9], [66, 2], [82, 6], [86, 14], [86, 29], [66, 29], [63, 41], [49, 43]]);
+    ctx.fillRect(64, 25, 22, 9);
+
+    // Tiny T-Rex arms.
+    ctx.fillRect(48, 36, 17, 5);
+    ctx.fillRect(60, 39, 5, 8);
+    ctx.fillRect(62, 45, 7, 4);
+
+    // Alternating running legs and broad feet.
+    if (!dino.grounded) {
+      polygon([[28, 50], [40, 50], [38, 63], [29, 68], [22, 65]]);
+      polygon([[43, 50], [55, 51], [59, 63], [52, 69], [44, 66]]);
+    } else if (legPhase) {
+      polygon([[27, 50], [39, 50], [35, 66], [21, 66], [21, 61], [28, 60]]);
+      polygon([[43, 51], [54, 51], [58, 66], [48, 66], [45, 60]]);
+    } else {
+      polygon([[28, 50], [39, 50], [41, 66], [31, 66], [27, 59]]);
+      polygon([[43, 51], [54, 51], [50, 66], [36, 66], [36, 61], [44, 60]]);
+    }
+
+    // Eye and open mouth make the silhouette easier to read.
+    ctx.fillStyle = c.eye;
+    ctx.fillRect(72, 10, 5, 5);
+    ctx.fillStyle = c.sky;
+    ctx.fillRect(69, 27, 17, 4);
+    ctx.fillRect(72, 31, 4, 3);
+    ctx.fillRect(80, 31, 4, 3);
+  }
+
+  function drawDuckingTrex(c) {
+    const legPhase = Math.sin(state.animationTime * 16) > 0;
+    ctx.fillStyle = c.ink;
+
+    polygon([[0, 32], [24, 20], [54, 20], [66, 29], [51, 42], [24, 42], [8, 38]]);
+    polygon([[49, 22], [61, 5], [79, 3], [93, 9], [93, 25], [74, 25], [68, 34], [56, 34]]);
+    ctx.fillRect(72, 21, 21, 8);
+    ctx.fillRect(54, 31, 15, 4);
+    ctx.fillRect(65, 34, 4, 7);
+
+    if (legPhase) {
+      ctx.fillRect(27, 39, 14, 9);
+      ctx.fillRect(55, 40, 18, 8);
+    } else {
+      ctx.fillRect(20, 40, 20, 8);
+      ctx.fillRect(52, 39, 14, 9);
+    }
+
+    ctx.fillStyle = c.eye;
+    ctx.fillRect(80, 9, 5, 5);
+    ctx.fillStyle = c.sky;
+    ctx.fillRect(76, 23, 17, 3);
   }
 
   function drawDino(c) {
     ctx.save();
     ctx.translate(dino.x, dino.y);
-    ctx.fillStyle = c.ink;
-
-    if (dino.ducking) {
-      ctx.fillRect(0, 12, 48, 26);
-      ctx.fillRect(42, 4, 26, 25);
-      ctx.fillRect(10, 34, 10, 8);
-      ctx.fillRect(42, 34, 12, 8);
-      ctx.fillStyle = c.acid;
-      ctx.fillRect(57, 10, 5, 5);
-    } else {
-      ctx.fillRect(8, 18, 32, 38);
-      ctx.fillRect(29, 0, 27, 29);
-      ctx.fillRect(0, 38, 17, 10);
-      ctx.fillRect(16, 54, 10, 12);
-      ctx.fillRect(35, 54, 10, 12);
-      ctx.fillStyle = c.acid;
-      ctx.fillRect(45, 7, 5, 5);
-      ctx.fillStyle = c.sky;
-      ctx.fillRect(48, 21, 8, 5);
-    }
+    if (dino.ducking) drawDuckingTrex(c);
+    else drawStandingTrex(c);
     ctx.restore();
   }
 
   function drawObstacle(obstacle, c) {
     ctx.save();
     ctx.translate(obstacle.x, obstacle.y);
-    ctx.fillStyle = obstacle.type === "bird" ? c.rust : c.ink;
+    ctx.fillStyle = obstacle.type === "bird" ? c.accent : c.ink;
+
     if (obstacle.type === "bird") {
       ctx.fillRect(10, 8, 31, 12);
       ctx.fillRect(37, 3, 13, 13);
@@ -253,17 +324,18 @@
       ctx.fillRect(44, 6, 3, 3);
     } else {
       ctx.fillRect(obstacle.width / 2 - 6, 0, 12, obstacle.height);
-      ctx.fillRect(3, obstacle.height * .34, 10, 9);
-      ctx.fillRect(3, obstacle.height * .34, 7, 24);
-      ctx.fillRect(obstacle.width - 13, obstacle.height * .48, 10, 9);
-      ctx.fillRect(obstacle.width - 10, obstacle.height * .2, 7, obstacle.height * .35);
+      ctx.fillRect(3, obstacle.height * 0.34, 10, 9);
+      ctx.fillRect(3, obstacle.height * 0.34, 7, 24);
+      ctx.fillRect(obstacle.width - 13, obstacle.height * 0.48, 10, 9);
+      ctx.fillRect(obstacle.width - 10, obstacle.height * 0.2, 7, obstacle.height * 0.35);
     }
+
     ctx.restore();
   }
 
   function drawCloud(x, y, c) {
     ctx.fillStyle = c.muted;
-    ctx.globalAlpha = .32;
+    ctx.globalAlpha = 0.28;
     ctx.fillRect(x, y + 8, 62, 7);
     ctx.fillRect(x + 12, y, 31, 9);
     ctx.globalAlpha = 1;
@@ -272,12 +344,13 @@
   function draw() {
     if (!canvas.logicalWidth) return;
     const c = colours();
+
     ctx.clearRect(0, 0, canvas.logicalWidth, canvas.logicalHeight);
     ctx.fillStyle = c.sky;
     ctx.fillRect(0, 0, canvas.logicalWidth, canvas.logicalHeight);
 
-    drawCloud(canvas.logicalWidth * .22 - (state.groundOffset * .08), 80, c);
-    drawCloud(canvas.logicalWidth * .67 - (state.groundOffset * .15), 132, c);
+    drawCloud(canvas.logicalWidth * 0.24 - state.groundOffset * 0.08, 72, c);
+    drawCloud(canvas.logicalWidth * 0.68 - state.groundOffset * 0.14, 118, c);
 
     ctx.strokeStyle = c.muted;
     ctx.lineWidth = 2;
@@ -288,7 +361,7 @@
 
     ctx.fillStyle = c.muted;
     for (let x = -state.groundOffset; x < canvas.logicalWidth; x += 38) {
-      ctx.fillRect(x, groundY() + 16 + ((x / 38) % 2 ? 8 : 0), 17, 3);
+      ctx.fillRect(x, groundY() + 15 + ((x / 38) % 2 ? 7 : 0), 17, 3);
     }
 
     drawDino(c);
@@ -300,7 +373,8 @@
       draw();
       return;
     }
-    const delta = Math.min(.032, (time - state.lastTime) / 1000 || 0);
+
+    const delta = Math.min(0.032, (time - state.lastTime) / 1000 || 0);
     state.lastTime = time;
     update(delta);
     draw();
@@ -316,20 +390,20 @@
       const gain = audioContext.createGain();
       oscillator.frequency.value = frequency;
       oscillator.type = "square";
-      gain.gain.setValueAtTime(.035, audioContext.currentTime);
-      gain.gain.exponentialRampToValueAtTime(.001, audioContext.currentTime + duration);
+      gain.gain.setValueAtTime(0.035, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
       oscillator.connect(gain).connect(audioContext.destination);
       oscillator.start();
       oscillator.stop(audioContext.currentTime + duration);
-    } catch { /* sound remains optional */ }
+    } catch { /* sound is optional */ }
   }
 
   function toggleSound() {
     state.sound = !state.sound;
     soundButton.setAttribute("aria-pressed", String(state.sound));
     soundButton.setAttribute("aria-label", state.sound ? "Turn sound off" : "Turn sound on");
-    soundState.textContent = state.sound ? "ON" : "OFF";
-    beep(560, .04);
+    soundState.textContent = state.sound ? "on" : "off";
+    beep(560, 0.04);
   }
 
   function toggleTheme() {
@@ -337,7 +411,7 @@
     document.body.classList.toggle("night", state.night);
     themeButton.setAttribute("aria-pressed", String(state.night));
     themeButton.setAttribute("aria-label", state.night ? "Switch to day mode" : "Switch to night mode");
-    themeState.textContent = state.night ? "NIGHT" : "DAY";
+    themeState.textContent = state.night ? "night" : "day";
     draw();
   }
 
@@ -373,6 +447,6 @@
   window.addEventListener("keyup", handleKeyUp);
   window.addEventListener("resize", resizeCanvas);
 
-  updateBoard();
+  updateScore();
   resizeCanvas();
 })();
