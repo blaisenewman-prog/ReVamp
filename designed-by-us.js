@@ -82,6 +82,32 @@
           description: "A polished, responsive one-page concept with clearer programmes, events, mission and contact pathways."
         }
       }
+    },
+    {
+      id: "trex-runner",
+      number: "PROJECT 04 · GAME EXPERIENCE",
+      status: "INTERACTIVE PROTOTYPE",
+      name: "T-Rex Runner",
+      summary: "A cleaner, responsive version of the familiar browser runner, designed to make the game easier to understand, easier to play on mobile and more rewarding to replay.",
+      outcome: "The redesign places the playable game first, adds clear touch and keyboard controls, local high-score tracking, day and night modes and a much stronger visual hierarchy without overcomplicating the original idea.",
+      tags: ["Game interface", "Touch controls", "Responsive interaction"],
+      defaultView: "after",
+      views: {
+        before: {
+          url: "https://trex-runner.com/",
+          label: "BEFORE · LIVE SITE",
+          address: "trex-runner.com / live website",
+          title: "Current live T-Rex Runner website",
+          description: "The Before view uses the current trex-runner.com website. If the website blocks embedded previews, Open current view will still take you directly to it."
+        },
+        after: {
+          url: "designed-sites/trex-runner/after/index.html",
+          label: "AFTER · INTERACTIVE",
+          address: "t-rex runner / PestoAi concept",
+          title: "Interactive PestoAi redesign concept for T-Rex Runner",
+          description: "A playable, responsive redesign with clearer controls, local scores, improved mobile usability and a simple arcade-inspired identity."
+        }
+      }
     }
   ];
 

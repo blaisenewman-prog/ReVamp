@@ -8,7 +8,7 @@
 .designed-heading { margin-bottom: clamp(1.75rem, 4vw, 2.75rem); }
 .designed-project-tabs {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: .75rem;
   margin-bottom: clamp(1.75rem, 4vw, 3rem);
 }
@@ -109,4 +109,8 @@
 @media (prefers-reduced-motion: reduce) {
   .designed-loading span { animation: none; }
   .designed-frame-wrap iframe, .designed-loading, .designed-project-tab { transition: none; }
+}
+
+@media (max-width: 1040px) and (min-width: 701px) {
+  .designed-project-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

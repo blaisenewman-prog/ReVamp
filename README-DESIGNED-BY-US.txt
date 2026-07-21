@@ -1,4 +1,4 @@
-PESTOAI — THREE-PROJECT “DESIGNED BY US” SECTION
+PESTOAI — FOUR-PROJECT “DESIGNED BY US” SECTION
 
 UPLOAD TO THE ROOT OF YOUR GITHUB PAGES REPOSITORY:
 - index.html
@@ -21,25 +21,24 @@ Wriddle:
 - After: designed-sites/wriddle/after/index.html
 
 Oileán:
-- Before: https://www.oilean.ie/ (the live website)
+- Before: https://www.oilean.ie/
 - After: designed-sites/oilean/after/index.html
 
-IMPORTANT FOR OILEÁN ASSETS
+T-Rex Runner:
+- Before: https://trex-runner.com/
+- After: designed-sites/trex-runner/after/index.html
 
-Upload the ENTIRE folder below, not only index.html:
+IMPORTANT FOR LOCAL AFTER SITES
 
-designed-sites/oilean/after/
+Upload each complete After folder, not only its index.html. Relative CSS, JavaScript, image and asset paths depend on the folders remaining intact.
+
+The T-Rex Runner After folder must remain exactly like this:
+
+designed-sites/trex-runner/after/
 ├── index.html
 ├── styles.css
 ├── script.js
 └── assets/
-    ├── hero-island.webp
-    ├── cop30-leaders.webp
-    ├── cop30-group.webp
-    ├── un-speaker.webp
-    ├── unoc.webp
-    └── cop31.webp
+    └── dino-mark.svg
 
-The Oileán HTML uses relative paths such as assets/hero-island.webp. Those paths only work when the assets folder remains next to index.html in the exact structure above.
-
-The Before toggle attempts to show the live Oileán website inside the preview. External websites can block iframe embedding using their own security settings. The “Open current view” link remains available and opens the original site directly.
+External Before websites may block iframe embedding through their own security settings. The Open current view link remains available and opens the live website directly.

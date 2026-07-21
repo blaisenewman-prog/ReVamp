@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11130f">
+  <meta name="description" content="A cleaner, responsive T-Rex Runner game concept designed by PestoAi.">
+  <title>T-Rex Runner — PestoAi Redesign</title>
+  <link rel="icon" href="assets/dino-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#game">Skip to game</a>
+
+  <header class="site-header">
+    <a class="brand" href="#game" aria-label="T-Rex Runner home">
+      <img src="assets/dino-mark.svg" width="38" height="38" alt="">
+      <span><strong>T-Rex</strong> Runner</span>
+    </a>
+
+    <div class="header-actions">
+      <button class="icon-button" id="soundButton" type="button" aria-pressed="false" aria-label="Turn sound on">
+        <span aria-hidden="true">SOUND</span><strong id="soundState">OFF</strong>
+      </button>
+      <button class="icon-button" id="themeButton" type="button" aria-pressed="false" aria-label="Switch to night mode">
+        <span aria-hidden="true">MODE</span><strong id="themeState">DAY</strong>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="pageTitle">
+      <div>
+        <p class="eyebrow">THE OFFLINE CLASSIC · REBUILT FOR ANY SCREEN</p>
+        <h1 id="pageTitle">Run farther.<br><em>Stay alive.</em></h1>
+      </div>
+      <p class="hero-copy">Jump the cacti, duck the birds and chase a new personal best. No account, no download and no distractions.</p>
+    </section>
+
+    <section class="game-shell" id="game" aria-labelledby="gameTitle">
+      <div class="scorebar">
+        <div><span>SCORE</span><strong id="scoreValue">00000</strong></div>
+        <div><span>BEST</span><strong id="bestValue">00000</strong></div>
+        <div><span>SPEED</span><strong id="speedValue">1.0×</strong></div>
+      </div>
+
+      <div class="game-stage" id="gameStage">
+        <canvas id="gameCanvas" width="1200" height="440" aria-label="T-Rex endless runner game"></canvas>
+
+        <div class="game-overlay" id="startOverlay">
+          <img src="assets/dino-mark.svg" width="54" height="54" alt="">
+          <p class="overlay-kicker">READY?</p>
+          <h2 id="gameTitle">Press space or tap to run</h2>
+          <p>Jump over obstacles. Hold down to duck.</p>
+          <button class="primary-button" id="startButton" type="button">Start run <span aria-hidden="true">→</span></button>
+        </div>
+
+        <div class="game-overlay game-over" id="gameOverOverlay" hidden>
+          <p class="overlay-kicker">RUN COMPLETE</p>
+          <h2>Score <span id="finalScore">0</span></h2>
+          <p id="gameOverMessage">A solid first run. Go again.</p>
+          <button class="primary-button" id="restartButton" type="button">Run again <span aria-hidden="true">↻</span></button>
+        </div>
+      </div>
+
+      <div class="mobile-controls" aria-label="Touch controls">
+        <button id="duckButton" type="button"><span>↓</span> Duck</button>
+        <button id="jumpButton" type="button"><span>↑</span> Jump</button>
+      </div>
+
+      <div class="keyboard-help" aria-label="Keyboard controls">
+        <span><kbd>SPACE</kbd> or <kbd>↑</kbd> jump</span>
+        <span><kbd>↓</kbd> duck</span>
+        <span><kbd>R</kbd> restart</span>
+      </div>
+    </section>
+
+    <section class="below-grid" aria-label="Game information">
+      <article class="panel">
+        <p class="panel-label">HOW TO PLAY</p>
+        <ol>
+          <li><span>01</span><p><strong>Start running</strong> with space, the up arrow or the jump button.</p></li>
+          <li><span>02</span><p><strong>Time each jump</strong> as the course becomes progressively faster.</p></li>
+          <li><span>03</span><p><strong>Beat your best</strong>, which is saved privately in this browser.</p></li>
+        </ol>
+      </article>
+
+      <article class="panel leaderboard">
+        <div class="panel-heading">
+          <div><p class="panel-label">LOCAL BOARD</p><h2>Your runs</h2></div>
+          <span class="live-pill"><i></i> THIS DEVICE</span>
+        </div>
+        <div class="rank-list" id="rankList">
+          <div><span>01</span><strong>PERSONAL BEST</strong><b id="boardBest">00000</b></div>
+          <div><span>02</span><strong>LATEST RUN</strong><b id="boardLatest">00000</b></div>
+          <div><span>03</span><strong>RUNS PLAYED</strong><b id="boardRuns">000</b></div>
+        </div>
+        <p class="privacy-note">Scores stay on your device. No sign-up or public username required.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <p>Independent redesign concept for demonstration purposes.</p>
+    <a href="https://pestoai.net/#designed" target="_blank" rel="noopener">Designed by PestoAi ↗</a>
+  </footer>
+</body>
+</html>
