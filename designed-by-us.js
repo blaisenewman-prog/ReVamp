@@ -82,32 +82,6 @@
           description: "A minimal playable redesign with clearer controls and a more recognisable T-Rex—not a final production game."
         }
       }
-    },
-    {
-      id: "sybix",
-      number: "PROJECT 04 · WEBSITE REDESIGN",
-      status: "FIRST RENDITION",
-      name: "Sybix",
-      summary: "A personal internet launch console redesigned for faster scanning and everyday use, while preserving the deliberately simple, engineer-focused character of the original site.",
-      outcome: "Dense links were reorganised into clear groups, with filtering, useful information and a responsive layout added without turning the site into a conventional corporate homepage.",
-      tags: ["Information design", "Responsive layout", "Useful utilities"],
-      defaultView: "after",
-      views: {
-        before: {
-          url: "designed-sites/sybix/before/index.html",
-          label: "BEFORE",
-          address: "sybix / before",
-          title: "Redacted original-style version of the Sybix website",
-          description: "A redacted representation of the original link-heavy homepage, preserving the layout without publishing private destinations."
-        },
-        after: {
-          url: "designed-sites/sybix/after/index.html",
-          label: "AFTER · FIRST RENDITION",
-          address: "sybix / first rendition",
-          title: "First-rendition redesign of the Sybix website",
-          description: "An early searchable launch-console concept that remains intentionally compact and practical—not a final client product."
-        }
-      }
     }
   ];
 
